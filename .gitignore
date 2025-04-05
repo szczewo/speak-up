@@ -1,0 +1,22 @@
+# Node.js
+node_modules/
+yarn.lock
+package-lock.json
+
+# Symfony
+var/
+vendor/
+
+# config
+.env
+.env.*
+
+# editor
+.idea/
+*.swp
+
+
+*.log
+*.bak
+/public/build/
+
