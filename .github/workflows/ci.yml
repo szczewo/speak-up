@@ -24,6 +24,14 @@ jobs:
           sudo curl -L "https://github.com/docker/compose/releases/latest/download/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
           sudo chmod +x /usr/local/bin/docker-compose
 
+      - name: Create .env file
+        run: echo "${{ secrets.ENV_FILE }}" > .env
+
+      - name: Create mysql init file init.sql
+        run: |
+          mkdir -p mysql-init
+          echo "${{ secrets.MYSQL_INIT_SQL }}" > mysql-init/init.sql
+
       - name: Build and start containers
         run: docker-compose -f docker-compose.yml up -d --build
 
