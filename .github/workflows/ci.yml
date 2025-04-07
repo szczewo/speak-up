@@ -1,0 +1,50 @@
+name: CI - Docker Symfony + React
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+
+    services:
+      docker:
+        image: docker:24.0.2
+        options: --privileged
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v3
+
+      - name: Set up Docker
+        run: |
+          sudo curl -L "https://github.com/docker/compose/releases/latest/download/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+          sudo chmod +x /usr/local/bin/docker-compose
+
+      - name: Create .env file
+        run: echo "${{ secrets.ENV_FILE }}" > .env
+
+      - name: Create mysql init file init.sql
+        run: |
+          mkdir -p mysql-init
+          echo "${{ secrets.MYSQL_INIT_SQL }}" > mysql-init/init.sql
+
+      - name: Build and start containers
+        run: docker-compose -f docker-compose.yml up -d --build
+
+      - name: Wait for MySQL
+        run: |
+          until docker exec speak-up-db mysqladmin ping -h"localhost" --silent; do
+            echo "Waiting for MySQL..."
+            sleep 2
+          done
+
+      - name: Install PHP dependencies (Composer)
+        run: docker exec speak-up-web composer install
+
+      - name: Run Symfony tests
+        run: docker exec speak-up-web ./bin/phpunit
+
