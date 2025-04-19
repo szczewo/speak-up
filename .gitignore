@@ -25,3 +25,4 @@ vendor/
 /phpunit.xml
 /.phpunit.cache/
 ###< phpunit/phpunit ###
+mysql-init/
