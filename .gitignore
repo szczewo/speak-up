@@ -21,8 +21,6 @@ vendor/
 /public/build/
 
 
-###> phpunit/phpunit ###
 /phpunit.xml
 /.phpunit.cache/
-###< phpunit/phpunit ###
 mysql-init/
