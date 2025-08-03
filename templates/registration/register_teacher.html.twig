@@ -1,0 +1,66 @@
+{# @var registrationForm \Symfony\Component\Form\FormView<App\Form\TeacherRegistrationFormType> #}
+
+{% extends 'base.html.twig' %}
+
+{% block title %}Register{% endblock %}
+
+{% block body %}
+    {% for flash_error in app.flashes('verify_email_error') %}
+        <div class="alert alert-danger" role="alert">{{ flash_error }}</div>
+    {% endfor %}
+
+    <h1>Register as a Teacher</h1>
+
+    {{ form_errors(registrationForm) }}
+    {{ form_start(registrationForm) }}
+    <div class="form-group">
+        {{ form_label(registrationForm.name) }}
+        {{ form_widget(registrationForm.name) }}
+        {% for error in registrationForm.name.vars.errors %}
+            <div class="form-error-message">{{ error.message }}</div>
+        {% endfor %}
+    </div>
+    <div class="form-group">
+        {{ form_label(registrationForm.lastName) }}
+        {{ form_widget(registrationForm.lastName) }}
+        {% for error in registrationForm.lastName.vars.errors %}
+            <div class="form-error-message">{{ error.message }}</div>
+        {% endfor %}
+    </div>
+    <div class="form-group">
+        {{ form_label(registrationForm.email) }}
+        {{ form_widget(registrationForm.email) }}
+        {% for error in registrationForm.email.vars.errors %}
+            <div class="form-error-message">{{ error.message }}</div>
+        {% endfor %}
+    </div>
+    <div class="form-group">
+        <div class="form-group">
+            {{ form_label(registrationForm.plainPassword.first) }}
+            {{ form_widget(registrationForm.plainPassword.first) }}
+            {% for error in registrationForm.plainPassword.first.vars.errors %}
+                <div class="form-error-message">{{ error.message }}</div>
+            {% endfor %}
+        </div>
+        <div class="form-group">
+            {{ form_label(registrationForm.plainPassword.second) }}
+            {{ form_widget(registrationForm.plainPassword.second) }}
+            {% for error in registrationForm.plainPassword.second.vars.errors %}
+                <div class="form-error-message">{{ error.message }}</div>
+            {% endfor %}
+        </div>
+        {% for error in registrationForm.plainPassword.vars.errors %}
+            <div class="form-error-message">{{ error.message }}</div>
+        {% endfor %}
+    </div>
+    <div class="form-group">
+        {{ form_label(registrationForm.agreeTerms) }}
+        {{ form_widget(registrationForm.agreeTerms) }}
+        {% for error in registrationForm.agreeTerms.vars.errors %}
+            <div class="form-error-message">{{ error.message }}</div>
+        {% endfor %}
+    </div>
+    <button type="submit" class="btn">Register</button>
+    {{ form_end(registrationForm) }}
+{% endblock %}
+

@@ -7,44 +7,49 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
-#[ORM\Entity(repositoryClass: StudentRepository::class)]
+/**
+ * Represents a student user in the system.
+ * Inherits base user information from the abstract User class.
+ */
+#[ORM\Entity]
 class Student extends User
 {
-    #[ORM\ManyToMany(targetEntity: Language::class, inversedBy: 'students')]
-    private Collection $languages;
+    /**
+     * The language that the student is currently learning.
+     * Many-to-one relationship.
+     */
+    #[ORM\ManyToOne(targetEntity: Language::class, inversedBy: 'students')]
+    private ?Language $learningLanguage = null;
 
-    public function __construct()
-    {
-        parent::__construct();
-        $this->languages = new ArrayCollection();
-    }
-
+    /**
+     * Returns the type identifier for this user,
+     * distinguish between user types.
+     */
     public function getType(): string
     {
         return 'student';
     }
 
     /**
-     * @return Collection<int, Language>
+     *  Gets the language that the student is currently learning.
+     *
+     * @return Language|null
      */
-    public function getLanguages(): Collection
+    public function getLearningLanguage(): ?Language
     {
-        return $this->languages;
+        return $this->learningLanguage;
     }
 
-    public function addLanguage(Language $language): static
+    /**
+     *  Sets the language that the student is currently learning.
+     *
+     * @param Language|null $learningLanguage
+     * @return static
+     */
+    public function setLearningLanguage(?Language $learningLanguage): static
     {
-        if (!$this->languages->contains($language)) {
-            $this->languages->add($language);
-        }
-
+        $this->learningLanguage = $learningLanguage;
         return $this;
     }
 
-    public function removeLanguage(Language $language): static
-    {
-        $this->languages->removeElement($language);
-
-        return $this;
-    }
 }

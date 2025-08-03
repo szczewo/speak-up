@@ -3,7 +3,7 @@
     <head>
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1"/>
-        <title>{% block title %}{% endblock %}Speak Up</title>
+        <title>{% block title %}{% endblock %} - Speak Up</title>
         {#
         Those two blocks defines frontend entrypoint for CSS and JavaScript assets
         See https://symfony.com/doc/current/frontend.html
@@ -19,6 +19,7 @@
     <body >
         <main id="main">
             <div id="root"></div>
+            {% block body %}{% endblock %}
         </main>
     </body>
 </html>
