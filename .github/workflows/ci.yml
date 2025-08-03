@@ -42,6 +42,9 @@ jobs:
             sleep 2
           done
 
+      - name: Allow git safe directory
+        run: docker exec speak-up-web git config --global --add safe.directory /var/www/html
+
       - name: Install PHP dependencies (Composer)
         run: docker exec speak-up-web composer install
 
