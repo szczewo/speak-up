@@ -43,7 +43,7 @@ jobs:
           done
           
       - name: Fix directory ownership
-        run: docker exec -u root speak-up-web chown -R www-data:www-data /var/www/html
+        run: docker exec -u root speak-up-web chown -R www-data:www-data /var/www
 
       - name: Create .gitconfig for www-data
         run: docker exec -u root speak-up-web bash -c "touch /var/www/.gitconfig && chown www-data:www-data /var/www/.gitconfig"
