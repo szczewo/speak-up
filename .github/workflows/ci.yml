@@ -43,10 +43,12 @@ jobs:
           done
           
       - name: Fix directory ownership
-        run: docker exec -u root speak-up-web chown -R www-data:www-data /var/www/html
+        run: |
+          docker exec -u root speak-up-web chown -R www-data:www-data /var/www/html
+          docker exec -u root speak-up-web chown www-data:www-data /var/www/.gitconfig || true
 
-      - name: Allow git safe directory (system)
-        run: docker exec speak-up-web git config --global --add safe.directory /var/www/html
+      - name: Allow git safe directory (global)
+        run: docker exec -u www-data speak-up-web git config --global --add safe.directory /var/www/html
 
       - name: Install PHP dependencies (Composer)
         run: docker exec speak-up-web composer install
