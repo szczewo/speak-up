@@ -43,9 +43,10 @@ jobs:
           done
           
       - name: Fix directory ownership
-        run: |
-          docker exec -u root speak-up-web chown -R www-data:www-data /var/www/html
-          docker exec -u root speak-up-web chown www-data:www-data /var/www/.gitconfig || true
+        run: docker exec -u root speak-up-web chown -R www-data:www-data /var/www/html
+
+      - name: Create .gitconfig for www-data
+        run: docker exec -u root speak-up-web bash -c "touch /var/www/.gitconfig && chown www-data:www-data /var/www/.gitconfig"
 
       - name: Allow git safe directory (global)
         run: docker exec -u www-data speak-up-web git config --global --add safe.directory /var/www/html
