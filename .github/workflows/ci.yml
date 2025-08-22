@@ -48,8 +48,11 @@ jobs:
       - name: Create .gitconfig for www-data
         run: docker exec -u root speak-up-web bash -c "touch /var/www/.gitconfig && chown www-data:www-data /var/www/.gitconfig"
 
-      - name: Allow git safe directory (global)
+      - name: Allow git safe directory for www-data
         run: docker exec -u www-data speak-up-web git config --global --add safe.directory /var/www/html
+
+      - name: Allow git safe directory for root
+        run: docker exec speak-up-web git config --global --add safe.directory /var/www/html
 
       - name: Install PHP dependencies (Composer)
         run: docker exec speak-up-web composer install
