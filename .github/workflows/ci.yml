@@ -30,7 +30,7 @@ jobs:
       - name: Create mysql init file init.sql
         run: |
           mkdir -p mysql-init
-          echo "${{ secrets.MYSQL_INIT_SQL }}" > mysql-init/init.sql
+          echo "${{ secrets.MYSQL_INIT }}" > mysql-init/init.sql
 
       - name: Build and start containers
         run: docker-compose -f docker-compose.yml up -d --build
