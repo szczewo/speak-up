@@ -42,9 +42,6 @@ jobs:
             sleep 2
           done
 
-      - name: Run migrations for test database
-        run: docker exec speak-up-web php bin/console doctrine:migrations:migrate --env=test --no-interaction
-
       - name: Fix directory ownership
         run: docker exec -u root speak-up-web chown -R www-data:www-data /var/www
 
@@ -59,6 +56,9 @@ jobs:
 
       - name: Install PHP dependencies (Composer)
         run: docker exec speak-up-web composer install
+
+      - name: Run migrations for test database
+        run: docker exec speak-up-web php bin/console doctrine:migrations:migrate --env=test --no-interaction
 
       - name: Run Symfony tests
         run: docker exec speak-up-web ./bin/phpunit
