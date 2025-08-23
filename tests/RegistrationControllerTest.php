@@ -200,7 +200,7 @@ class RegistrationControllerTest extends WebTestCase
         $form['student_registration_form[email]'] = 'student@example.com';
         $form['student_registration_form[name]'] = 'Test';
         $form['student_registration_form[lastName]'] = 'Student';
-        $form['student_registration_form[plainPassword][first]'] = 'pass'; // Invalid password - lenght does not match
+        $form['student_registration_form[plainPassword][first]'] = 'pass'; // Invalid password - length does not match
         $form['student_registration_form[plainPassword][second]'] = 'pass';
         $form['student_registration_form[agreeTerms]'] = false;
         $client->submit($form);
