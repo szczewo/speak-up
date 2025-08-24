@@ -63,6 +63,12 @@ jobs:
       - name: Run migrations for test database
         run: docker exec speak-up-web php bin/console doctrine:migrations:migrate --env=test --no-interaction
 
+      - name: Install Node.js deps
+        run: docker exec speak-up-web npm ci
+
+      - name: Build frontend
+        run: docker exec speak-up-web npm run build
+
       - name: Run Symfony tests
         run: docker exec speak-up-web ./bin/phpunit
 
