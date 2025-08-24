@@ -34,9 +34,9 @@ class StudentRegistrationFormType extends AbstractType
             ->add('lastName', TextType::class, [
                 'label' => 'Last Name',
                 'constraints' => [
-                  new NotBlank(),
-                  new Length(['max' => 45]),
-              ]
+                    new NotBlank(),
+                    new Length(['max' => 45]),
+                ]
             ])
             ->add('email', EmailType::class, [
                 'label' => 'Email address',
