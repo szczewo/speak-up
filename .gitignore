@@ -1,7 +1,6 @@
 # Node.js
 node_modules/
 yarn.lock
-package-lock.json
 
 # Symfony
 var/
@@ -20,11 +19,7 @@ vendor/
 *.bak
 /public/build/
 
-
-###> phpunit/phpunit ###
-/phpunit.xml
 /.phpunit.cache/
-###< phpunit/phpunit ###
 
 mysql-init/
 

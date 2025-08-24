@@ -27,10 +27,13 @@ jobs:
       - name: Create .env file
         run: echo "${{ secrets.ENV_FILE }}" > .env
 
+      - name: Create .env.test file
+        run: echo "${{ secrets.ENV_TEST_FILE }}" > .env.test
+
       - name: Create mysql init file init.sql
         run: |
           mkdir -p mysql-init
-          echo "${{ secrets.MYSQL_INIT_SQL }}" > mysql-init/init.sql
+          echo "${{ secrets.MYSQL_INIT }}" > mysql-init/init.sql
 
       - name: Build and start containers
         run: docker-compose -f docker-compose.yml up -d --build
@@ -41,16 +44,30 @@ jobs:
             echo "Waiting for MySQL..."
             sleep 2
           done
-          
-      - name: Fix directory ownership
-        run: docker exec -u root speak-up-web chown -R www-data:www-data /var/www/html
 
-      - name: Allow git safe directory
+      - name: Fix directory ownership
+        run: docker exec -u root speak-up-web chown -R www-data:www-data /var/www
+
+      - name: Create .gitconfig for www-data
+        run: docker exec -u root speak-up-web bash -c "touch /var/www/.gitconfig && chown www-data:www-data /var/www/.gitconfig"
+
+      - name: Allow git safe directory for www-data
         run: docker exec -u www-data speak-up-web git config --global --add safe.directory /var/www/html
 
+      - name: Allow git safe directory for root
+        run: docker exec speak-up-web git config --global --add safe.directory /var/www/html
 
       - name: Install PHP dependencies (Composer)
         run: docker exec speak-up-web composer install
+
+      - name: Run migrations for test database
+        run: docker exec speak-up-web php bin/console doctrine:migrations:migrate --env=test --no-interaction
+
+      - name: Install Node.js deps
+        run: docker exec speak-up-web npm ci
+
+      - name: Build frontend
+        run: docker exec speak-up-web npm run build
 
       - name: Run Symfony tests
         run: docker exec speak-up-web ./bin/phpunit
