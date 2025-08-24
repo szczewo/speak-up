@@ -21,12 +21,12 @@ use SymfonyCasts\Bundle\VerifyEmail\Exception\VerifyEmailExceptionInterface;
 
 class RegistrationController extends AbstractController
 {
-    private EmailVerifier $emailVerifier;
 
-    public function __construct(EmailVerifier $emailVerifier)
-    {
-        $this->emailVerifier = $emailVerifier;
-    }
+    public function __construct(
+        private EmailVerifier $emailVerifier,
+        private string $fromAddress,
+        private string $fromName,
+    ) {}
 
     #[Route('/register/student', name: 'app_register_student')]
     public function registerStudent(
@@ -55,7 +55,7 @@ class RegistrationController extends AbstractController
             // generate a signed url and email it to the user
             $this->emailVerifier->sendEmailConfirmation('app_verify_email', $user,
                 (new TemplatedEmail())
-                    ->from(new Address('aniastrzewiczek@gmail.com', 'Speak Up'))
+                    ->from(new Address($this->fromAddress, $this->fromName))
                     ->to($user->getEmail())
                     ->subject('Please Confirm your Email')
                     ->htmlTemplate('mail/confirmation_email_student.html.twig')
@@ -95,7 +95,7 @@ class RegistrationController extends AbstractController
             // generate a signed url and email it to the user
             $this->emailVerifier->sendEmailConfirmation('app_verify_email', $user,
                 (new TemplatedEmail())
-                    ->from(new Address('aniastrzewiczek@gmail.com', 'Speak Up'))
+                    ->from(new Address($this->fromAddress, $this->fromName))
                     ->to($user->getEmail())
                     ->subject('Please Confirm your Email')
                     ->htmlTemplate('mail/confirmation_email_teacher.html.twig')
