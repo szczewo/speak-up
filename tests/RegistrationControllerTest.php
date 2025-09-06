@@ -3,12 +3,14 @@
 namespace App\Tests;
 
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Bundle\FrameworkBundle\Test\MailerAssertionsTrait;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 /**
  * @doesNotRemoveExceptionHandlers
  */
 class RegistrationControllerTest extends WebTestCase
 {
+    use MailerAssertionsTrait;
     private static $client;
 
     /**
@@ -33,7 +35,26 @@ class RegistrationControllerTest extends WebTestCase
             ->execute();
     }
 
-    /**
+    private function submitRegistrationForm(string $type, array $formData)
+    {
+        $client = self::$client;
+        $crawler = $client->request('GET', "/register/$type");
+        $form = $crawler->selectButton('Register')->form();
+
+        foreach ($formData as $key => $value) {
+            if (preg_match('/^([^\[]+)\[([^\]]+)\]$/', $key, $matches)) {
+                $form["{$type}_registration_form[{$matches[1]}][{$matches[2]}]"] = $value;
+            } else {
+                $form["{$type}_registration_form[$key]"] = $value;
+            }
+        }
+
+        $client->submit($form);
+        return $client;
+    }
+
+
+        /**
      * @return void
      * Tests if the student registration form is displayed correctly.
      */
@@ -52,28 +73,54 @@ class RegistrationControllerTest extends WebTestCase
      */
     public function testStudentCanRegisterWithValidData(): void
     {
-        $client = self::$client;
-        $crawler = $client->request('GET', '/register/student');
 
-        $form = $crawler->selectButton('Register')->form();
+        $formData = [
+            'email' => 'student@example.com',
+            'name' => 'Test',
+            'lastName' => 'Student',
+            'plainPassword[first]' => 'Password123-',
+            'plainPassword[second]' => 'Password123-',
+            'agreeTerms' => true,
+        ];
+        $client = $this->submitRegistrationForm('student', $formData);
 
-        $form['student_registration_form[email]'] = 'student@example.com';
-        $form['student_registration_form[name]'] = 'Test';
-        $form['student_registration_form[lastName]'] = 'Student';
-        $form['student_registration_form[plainPassword][first]'] = 'Password123-';
-        $form['student_registration_form[plainPassword][second]'] = 'Password123-';
-        $form['student_registration_form[agreeTerms]'] = true;
-
-
-        $client->submit($form);
-
+        // Check redirect to check-email page and that a confirmation email was sent
         $this->assertResponseRedirects('/register/check-email');
-
+        $this->assertEmailCount(1);
+        $email = $this->getMailerMessage(0);
         $crawler = $client->followRedirect();
-
         $this->assertResponseIsSuccessful();
-
         $this->assertSelectorTextContains('h1', 'Thank you for registering!');
+
+        //Check email details
+        $fromAddress = self::getContainer()->getParameter('app.mailer_from_address');
+        $fromName = self::getContainer()->getParameter('app.mailer_from_name');
+
+        $this->assertEmailHeaderSame($email, 'to', 'student@example.com');
+        $this->assertEmailHeaderSame($email, 'from', sprintf('%s <%s>', $fromName, $fromAddress));
+        $this->assertEmailHeaderSame($email, 'subject', 'Please Confirm your Email');
+        $this->assertEmailHtmlBodyContains($email, 'Please confirm your email');
+
+        // Check for confirmation link in the email
+        $this->assertEmailHtmlBodyContains($email, '/verify/email');
+
+        //Extract the confirmation link
+        preg_match('/https?:\/\/[^\s"]+\/verify\/email[^\s"]*/', $email->getHtmlBody(), $matches);
+        $this->assertNotEmpty($matches, 'No confirmation link found in email.');
+        $confirmationLink = $matches[0];
+
+        // Simulate clicking the confirmation link
+        $client->request('GET', $confirmationLink);
+        $this->assertResponseRedirects('/login');
+        $client->followRedirect();
+
+        //Check if user is verified in the database
+        $container = self::$client->getContainer();
+        /** @var EntityManagerInterface $em */
+        $em = $container->get('doctrine')->getManager();
+        $user = $em->getRepository('App\Entity\User')->findOneBy(['email' => 'student@example.com']);
+        $this->assertNotNull($user, 'User not found in database.');
+        $this->assertTrue($user->isVerified(), 'User email is not verified.');
     }
 
     /**
@@ -82,20 +129,17 @@ class RegistrationControllerTest extends WebTestCase
      */
     public function testStudentCannotRegisterWithInvalidEmail(): void
     {
-        $client = self::$client;
-        $crawler = $client->request('GET', '/register/student');
 
-        $form = $crawler->selectButton('Register')->form();
+        $formData = [
+            'email' => 'invalid-email',
+            'name' => 'Test',
+            'lastName' => 'Student',
+            'plainPassword[first]' => 'Password123-',
+            'plainPassword[second]' => 'Password123-',
+            'agreeTerms' => true,
+        ];
 
-        $form['student_registration_form[email]'] = 'invalid-email';
-        $form['student_registration_form[name]'] = 'Test';
-        $form['student_registration_form[lastName]'] = 'Student';
-        $form['student_registration_form[plainPassword][first]'] = 'Password123-';
-        $form['student_registration_form[plainPassword][second]'] = 'Password123-';
-        $form['student_registration_form[agreeTerms]'] = true;
-
-
-        $client->submit($form);
+        $client = $this->submitRegistrationForm('student', $formData);
 
         //Redisplay form with errors
         $this->assertResponseIsSuccessful();
@@ -111,30 +155,19 @@ class RegistrationControllerTest extends WebTestCase
      */
     public function testStudentCannotRegisterWithDuplicateEmail(): void
     {
-        $client = self::$client;
-
-        // First registration
-        $crawler = $client->request('GET', '/register/student');
-        $form = $crawler->selectButton('Register')->form();
-        $form['student_registration_form[email]'] = 'student@example.com';
-        $form['student_registration_form[name]'] = 'Test';
-        $form['student_registration_form[lastName]'] = 'Student';
-        $form['student_registration_form[plainPassword][first]'] = 'Password123-';
-        $form['student_registration_form[plainPassword][second]'] = 'Password123-';
-        $form['student_registration_form[agreeTerms]'] = true;
-        $client->submit($form);
+        $formData = [
+            'email' => 'student@example.com',
+            'name' => 'Test',
+            'lastName' => 'Student',
+            'plainPassword[first]' => 'Password123-',
+            'plainPassword[second]' => 'Password123-',
+            'agreeTerms' => true,
+        ];
+        $client = $this->submitRegistrationForm('student', $formData);
         $client->followRedirect();
 
         // Attempt to register with the same email
-        $crawler = $client->request('GET', '/register/student');
-        $form = $crawler->selectButton('Register')->form();
-        $form['student_registration_form[email]'] = 'student@example.com';
-        $form['student_registration_form[name]'] = 'Test';
-        $form['student_registration_form[lastName]'] = 'Student';
-        $form['student_registration_form[plainPassword][first]'] = 'Password123-';
-        $form['student_registration_form[plainPassword][second]'] = 'Password123-';
-        $form['student_registration_form[agreeTerms]'] = true;
-        $client->submit($form);
+        $this->submitRegistrationForm('student', $formData);
 
         $this->assertResponseIsSuccessful();
         $this->assertSelectorExists('#student_registration_form_email + .form-error-message');
@@ -147,17 +180,15 @@ class RegistrationControllerTest extends WebTestCase
      */
     public function testStudentCannotRegisterWithoutAgreeingTerms(): void
     {
-        $client = self::$client;
-        $crawler = $client->request('GET', '/register/student');
-        $form = $crawler->selectButton('Register')->form();
-
-        $form['student_registration_form[email]'] = 'student@example.com';
-        $form['student_registration_form[name]'] = 'Test';
-        $form['student_registration_form[lastName]'] = 'Student';
-        $form['student_registration_form[plainPassword][first]'] = 'Password123-';
-        $form['student_registration_form[plainPassword][second]'] = 'Password123-';
-        $form['student_registration_form[agreeTerms]'] = false;
-        $client->submit($form);
+        $formData = [
+            'email' => 'student@example.com',
+            'name' => 'Test',
+            'lastName' => 'Student',
+            'plainPassword[first]' => 'Password123-',
+            'plainPassword[second]' => 'Password123-',
+            'agreeTerms' => false,
+        ];
+        $client = $this->submitRegistrationForm('student', $formData);
 
         $this->assertResponseIsSuccessful();
         $this->assertSelectorExists('#student_registration_form_agreeTerms + .form-error-message');
@@ -170,17 +201,15 @@ class RegistrationControllerTest extends WebTestCase
      */
     public function testStudentCannotRegisterWithInvalidPasswordCriteriaRegexp(): void
     {
-        $client = self::$client;
-        $crawler = $client->request('GET', '/register/student');
-        $form = $crawler->selectButton('Register')->form();
-
-        $form['student_registration_form[email]'] = 'student@example.com';
-        $form['student_registration_form[name]'] = 'Test';
-        $form['student_registration_form[lastName]'] = 'Student';
-        $form['student_registration_form[plainPassword][first]'] = 'password'; // Invalid password - regex does not match
-        $form['student_registration_form[plainPassword][second]'] = 'password';
-        $form['student_registration_form[agreeTerms]'] = false;
-        $client->submit($form);
+        $formData = [
+            'email' => 'student@example.com',
+            'name' => 'Test',
+            'lastName' => 'Student',
+            'plainPassword[first]' => 'password', // Invalid password - regex does not match
+            'plainPassword[second]' => 'password',
+            'agreeTerms' => true,
+        ];
+        $client = $this->submitRegistrationForm('student', $formData);
 
         $this->assertResponseIsSuccessful();
         $this->assertSelectorExists('#student_registration_form_plainPassword_first + .form-error-message');
@@ -193,17 +222,15 @@ class RegistrationControllerTest extends WebTestCase
      */
     public function testStudentCannotRegisterWithInvalidPasswordCriteriaLength(): void
     {
-        $client = self::$client;
-        $crawler = $client->request('GET', '/register/student');
-        $form = $crawler->selectButton('Register')->form();
-
-        $form['student_registration_form[email]'] = 'student@example.com';
-        $form['student_registration_form[name]'] = 'Test';
-        $form['student_registration_form[lastName]'] = 'Student';
-        $form['student_registration_form[plainPassword][first]'] = 'pass'; // Invalid password - length does not match
-        $form['student_registration_form[plainPassword][second]'] = 'pass';
-        $form['student_registration_form[agreeTerms]'] = false;
-        $client->submit($form);
+        $formData = [
+            'email' => 'student@example.com',
+            'name' => 'Test',
+            'lastName' => 'Student',
+            'plainPassword[first]' =>  'pass', // Invalid password - length does not match
+            'plainPassword[second]' => 'pass',
+            'agreeTerms' => true,
+        ];
+        $client = $this->submitRegistrationForm('student', $formData);
 
         $this->assertResponseIsSuccessful();
         $this->assertSelectorExists('#student_registration_form_plainPassword_first + .form-error-message');
@@ -229,27 +256,54 @@ class RegistrationControllerTest extends WebTestCase
      */
     public function testTeacherCanRegisterWithValidData(): void
     {
-        $client = self::$client;
-        $crawler = $client->request('GET', '/register/teacher');
-    
-        $form = $crawler->selectButton('Register')->form();
-    
-        $form['teacher_registration_form[email]'] = 'teacher@example.com';
-        $form['teacher_registration_form[name]'] = 'Test';
-        $form['teacher_registration_form[lastName]'] = 'Teacher';
-        $form['teacher_registration_form[plainPassword][first]'] = 'Password123-';
-        $form['teacher_registration_form[plainPassword][second]'] = 'Password123-';
-        $form['teacher_registration_form[agreeTerms]'] = true;
-    
-        $client->submit($form);
-    
+        $formData = [
+            'email' => 'teacher@example.com',
+            'name' => 'Test',
+            'lastName' => 'Teacher',
+            'plainPassword[first]' => 'Password123-',
+            'plainPassword[second]' => 'Password123-',
+            'agreeTerms' => true,
+        ];
+        $client = $this->submitRegistrationForm('teacher', $formData);
+
+        // Check redirect to check-email page and that a confirmation email was sent
         $this->assertResponseRedirects('/register/check-email');
-    
+        $this->assertEmailCount(1);
+        $email = $this->getMailerMessage(0);
         $crawler = $client->followRedirect();
-    
         $this->assertResponseIsSuccessful();
-    
         $this->assertSelectorTextContains('h1', 'Thank you for registering!');
+
+        //Check email details
+        $fromAddress = self::getContainer()->getParameter('app.mailer_from_address');
+        $fromName = self::getContainer()->getParameter('app.mailer_from_name');
+
+        $this->assertEmailHeaderSame($email, 'to', 'teacher@example.com');
+        $this->assertEmailHeaderSame($email, 'from', sprintf('%s <%s>', $fromName, $fromAddress));
+        $this->assertEmailHeaderSame($email, 'subject', 'Please Confirm your Email');
+        $this->assertEmailHtmlBodyContains($email, 'Please confirm your email');
+
+        // Check for confirmation link in the email
+        $this->assertEmailHtmlBodyContains($email, '/verify/email');
+
+        //Extract the confirmation link
+        preg_match('/https?:\/\/[^\s"]+\/verify\/email[^\s"]*/', $email->getHtmlBody(), $matches);
+        $this->assertNotEmpty($matches, 'No confirmation link found in email.');
+        $confirmationLink = $matches[0];
+
+        // Simulate clicking the confirmation link
+        $client->request('GET', $confirmationLink);
+        $this->assertResponseRedirects('/login');
+        $client->followRedirect();
+
+        //Check if user is verified in the database
+        $container = self::$client->getContainer();
+        /** @var EntityManagerInterface $em */
+        $em = $container->get('doctrine')->getManager();
+        $user = $em->getRepository('App\Entity\User')->findOneBy(['email' => 'teacher@example.com']);
+        $this->assertNotNull($user, 'User not found in database.');
+        $this->assertTrue($user->isVerified(), 'User email is not verified.');
+
     }
     
     /**
@@ -258,19 +312,15 @@ class RegistrationControllerTest extends WebTestCase
      */
     public function testTeacherCannotRegisterWithInvalidEmail(): void
     {
-        $client = self::$client;
-        $crawler = $client->request('GET', '/register/teacher');
-    
-        $form = $crawler->selectButton('Register')->form();
-    
-        $form['teacher_registration_form[email]'] = 'invalid-email';
-        $form['teacher_registration_form[name]'] = 'Test';
-        $form['teacher_registration_form[lastName]'] = 'Teacher';
-        $form['teacher_registration_form[plainPassword][first]'] = 'Password123-';
-        $form['teacher_registration_form[plainPassword][second]'] = 'Password123-';
-        $form['teacher_registration_form[agreeTerms]'] = true;
-    
-        $client->submit($form);
+        $formData = [
+            'email' => 'invalid-email',
+            'name' => 'Test',
+            'lastName' => 'Teacher',
+            'plainPassword[first]' => 'Password123-',
+            'plainPassword[second]' => 'Password123-',
+            'agreeTerms' => true,
+        ];
+        $client = $this->submitRegistrationForm('teacher', $formData);
     
         //Redisplay form with errors
         $this->assertResponseIsSuccessful();
@@ -285,31 +335,23 @@ class RegistrationControllerTest extends WebTestCase
      */
     public function testTeacherCannotRegisterWithDuplicateEmail(): void
     {
-        $client = self::$client;
-    
+        $formData = [
+            'email' => 'teacher@example.com',
+            'name' => 'Test',
+            'lastName' => 'Teacher',
+            'plainPassword[first]' => 'Password123-',
+            'plainPassword[second]' => 'Password123-',
+            'agreeTerms' => true,
+        ];
+
         // First registration
-        $crawler = $client->request('GET', '/register/teacher');
-        $form = $crawler->selectButton('Register')->form();
-        $form['teacher_registration_form[email]'] = 'teacher@example.com';
-        $form['teacher_registration_form[name]'] = 'Test';
-        $form['teacher_registration_form[lastName]'] = 'Teacher';
-        $form['teacher_registration_form[plainPassword][first]'] = 'Password123-';
-        $form['teacher_registration_form[plainPassword][second]'] = 'Password123-';
-        $form['teacher_registration_form[agreeTerms]'] = true;
-        $client->submit($form);
+        $client = $this->submitRegistrationForm('teacher', $formData);
+
         $client->followRedirect();
     
         // Attempt to register with the same email
-        $crawler = $client->request('GET', '/register/teacher');
-        $form = $crawler->selectButton('Register')->form();
-        $form['teacher_registration_form[email]'] = 'teacher@example.com';
-        $form['teacher_registration_form[name]'] = 'Test';
-        $form['teacher_registration_form[lastName]'] = 'Teacher';
-        $form['teacher_registration_form[plainPassword][first]'] = 'Password123-';
-        $form['teacher_registration_form[plainPassword][second]'] = 'Password123-';
-        $form['teacher_registration_form[agreeTerms]'] = true;
-        $client->submit($form);
-    
+        $client = $this->submitRegistrationForm('teacher', $formData);
+
         $this->assertResponseIsSuccessful();
         $this->assertSelectorExists('#teacher_registration_form_email + .form-error-message');
     }
@@ -320,18 +362,16 @@ class RegistrationControllerTest extends WebTestCase
      */
     public function testTeacherCannotRegisterWithoutAgreeingTerms(): void
     {
-        $client = self::$client;
-        $crawler = $client->request('GET', '/register/teacher');
-        $form = $crawler->selectButton('Register')->form();
-    
-        $form['teacher_registration_form[email]'] = 'teacher@example.com';
-        $form['teacher_registration_form[name]'] = 'Test';
-        $form['teacher_registration_form[lastName]'] = 'Teacher';
-        $form['teacher_registration_form[plainPassword][first]'] = 'Password123-';
-        $form['teacher_registration_form[plainPassword][second]'] = 'Password123-';
-        $form['teacher_registration_form[agreeTerms]'] = false;
-        $client->submit($form);
-    
+        $formData = [
+            'email' => 'teacher@example.com',
+            'name' => 'Test',
+            'lastName' => 'Teacher',
+            'plainPassword[first]' => 'Password123-',
+            'plainPassword[second]' => 'Password123-',
+            'agreeTerms' => false,
+        ];
+        $client = $this->submitRegistrationForm('teacher', $formData);
+
         $this->assertResponseIsSuccessful();
         $this->assertSelectorExists('#teacher_registration_form_agreeTerms + .form-error-message');
     }
@@ -342,18 +382,16 @@ class RegistrationControllerTest extends WebTestCase
      */
     public function testTeacherCannotRegisterWithInvalidPasswordCriteriaRegexp(): void
     {
-        $client = self::$client;
-        $crawler = $client->request('GET', '/register/teacher');
-        $form = $crawler->selectButton('Register')->form();
-    
-        $form['teacher_registration_form[email]'] = 'teacher@example.com';
-        $form['teacher_registration_form[name]'] = 'Test';
-        $form['teacher_registration_form[lastName]'] = 'Teacher';
-        $form['teacher_registration_form[plainPassword][first]'] = 'password'; // Invalid password - regex does not match
-        $form['teacher_registration_form[plainPassword][second]'] = 'password';
-        $form['teacher_registration_form[agreeTerms]'] = false;
-        $client->submit($form);
-    
+        $formData = [
+            'email' => 'teacher@example.com',
+            'name' => 'Test',
+            'lastName' => 'Teacher',
+            'plainPassword[first]' => 'password', // Invalid password - regex does not match
+            'plainPassword[second]' => 'password',
+            'agreeTerms' => true,
+        ];
+        $client = $this->submitRegistrationForm('teacher', $formData);
+
         $this->assertResponseIsSuccessful();
         $this->assertSelectorExists('#teacher_registration_form_plainPassword_first + .form-error-message');
     }
@@ -364,18 +402,16 @@ class RegistrationControllerTest extends WebTestCase
      */
     public function testTeacherCannotRegisterWithInvalidPasswordCriteriaLength(): void
     {
-        $client = self::$client;
-        $crawler = $client->request('GET', '/register/teacher');
-        $form = $crawler->selectButton('Register')->form();
-    
-        $form['teacher_registration_form[email]'] = 'teacher@example.com';
-        $form['teacher_registration_form[name]'] = 'Test';
-        $form['teacher_registration_form[lastName]'] = 'Teacher';
-        $form['teacher_registration_form[plainPassword][first]'] = 'pass'; // Invalid password - length does not match
-        $form['teacher_registration_form[plainPassword][second]'] = 'pass';
-        $form['teacher_registration_form[agreeTerms]'] = false;
-        $client->submit($form);
-    
+        $formData = [
+            'email' => 'teacher@example.com',
+            'name' => 'Test',
+            'lastName' => 'Teacher',
+            'plainPassword[first]' => 'pass', // Invalid password - length does not match
+            'plainPassword[second]' => 'pass',
+            'agreeTerms' => true,
+        ];
+        $client = $this->submitRegistrationForm('teacher', $formData);
+
         $this->assertResponseIsSuccessful();
         $this->assertSelectorExists('#teacher_registration_form_plainPassword_first + .form-error-message');
     }

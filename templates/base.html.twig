@@ -16,8 +16,13 @@
         {% endblock %}
         <link rel="icon" type="image/x-icon" href="" />
     </head>
-    <body >
+    <body>
         <main id="main">
+            {% if app.user %}
+                <div class="mb-3">
+                    You are logged in as {{ app.user.userIdentifier }}, <a href="{{ path('app_logout') }}">Logout</a>
+                </div>
+            {% endif %}
             <div id="root"></div>
             {% block body %}{% endblock %}
         </main>

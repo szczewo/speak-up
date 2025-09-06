@@ -16,7 +16,7 @@
         <server name="APP_ENV" value="test" force="true"/>
         <server name="DATABASE_URL" value="mysql://development:development@db/development_test" />
         <server name="SHELL_VERBOSITY" value="-1"/>
-        <server name="SYMFONY_PHPUNIT_REMOVE" value=""/>
+        <server name="SYMFONY_PHPUNIT_REMOVE_RETURN_EXCEPTION" value="1"/>
         <server name="SYMFONY_PHPUNIT_VERSION" value="10.5"/>
     </php>
     <testsuites>
