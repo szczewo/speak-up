@@ -28,6 +28,14 @@ class RegistrationController extends AbstractController
         private string $fromName,
     ) {}
 
+    /**
+     * Registers a new student
+     *
+     * @param Request $request
+     * @param UserPasswordHasherInterface $userPasswordHasher
+     * @param EntityManagerInterface $entityManager
+     * @return Response
+     */
     #[Route('/register/student', name: 'app_register_student')]
     public function registerStudent(
         Request $request,
@@ -68,6 +76,14 @@ class RegistrationController extends AbstractController
         ]);
     }
 
+    /**
+     * Registers a new teacher
+     *
+     * @param Request $request
+     * @param UserPasswordHasherInterface $userPasswordHasher
+     * @param EntityManagerInterface $entityManager
+     * @return Response
+     */
     #[Route('/register/teacher', name: 'app_register_teacher')]
     public function registerTeacher(
         Request $request,
@@ -109,6 +125,10 @@ class RegistrationController extends AbstractController
         ]);
     }
 
+    /**
+     * Tells the user to check their email
+     * @return Response
+     */
     #[Route('/register/check-email', name: 'app_check_email')]
     public function checkEmail(): Response
     {
@@ -116,6 +136,12 @@ class RegistrationController extends AbstractController
     }
 
 
+    /**
+     * Verifies user email
+     * @param Request $request
+     * @param EntityManagerInterface $em
+     * @return Response
+     */
     #[Route('/verify/email', name: 'app_verify_email')]
     public function verifyUserEmail(Request $request, EntityManagerInterface $em): Response
     {

@@ -46,7 +46,8 @@ class RegistrationControllerTest extends WebTestCase
                 $form["{$type}_registration_form[{$matches[1]}][{$matches[2]}]"] = $value;
             } else {
                 $form["{$type}_registration_form[$key]"] = $value;
-            }        }
+            }
+        }
 
         $client->submit($form);
         return $client;
@@ -387,7 +388,7 @@ class RegistrationControllerTest extends WebTestCase
             'lastName' => 'Teacher',
             'plainPassword[first]' => 'password', // Invalid password - regex does not match
             'plainPassword[second]' => 'password',
-            'agreeTerms' => false,
+            'agreeTerms' => true,
         ];
         $client = $this->submitRegistrationForm('teacher', $formData);
 
@@ -407,7 +408,7 @@ class RegistrationControllerTest extends WebTestCase
             'lastName' => 'Teacher',
             'plainPassword[first]' => 'pass', // Invalid password - length does not match
             'plainPassword[second]' => 'pass',
-            'agreeTerms' => false,
+            'agreeTerms' => true,
         ];
         $client = $this->submitRegistrationForm('teacher', $formData);
 
