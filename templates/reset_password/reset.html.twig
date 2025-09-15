@@ -1,0 +1,31 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Reset your password{% endblock %}
+
+{% block body %}
+    <h1>Reset your password</h1>
+
+    {{ form_errors(resetForm) }}
+    {{ form_start(resetForm) }}
+    <div class="form-group">
+        <div class="form-group">
+            {{ form_label(resetForm.plainPassword.first) }}
+            {{ form_widget(resetForm.plainPassword.first) }}
+            {% for error in resetForm.plainPassword.first.vars.errors %}
+                <div class="form-error-message">{{ error.message }}</div>
+            {% endfor %}
+        </div>
+        <div class="form-group">
+            {{ form_label(resetForm.plainPassword.second) }}
+            {{ form_widget(resetForm.plainPassword.second) }}
+            {% for error in resetForm.plainPassword.second.vars.errors %}
+                <div class="form-error-message">{{ error.message }}</div>
+            {% endfor %}
+        </div>
+        {% for error in resetForm.plainPassword.vars.errors %}
+            <div class="form-error-message">{{ error.message }}</div>
+        {% endfor %}
+    </div>
+        <button class="btn btn-primary">Reset password</button>
+    {{ form_end(resetForm) }}
+{% endblock %}

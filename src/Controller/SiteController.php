@@ -14,7 +14,7 @@ use Symfony\Component\Routing\Annotation\Route;
 #[Route('/')]
 class SiteController extends AbstractController
 {
-    #[Route('/', name: 'app_site_index', methods: ['GET'])]
+    #[Route('/', name: 'app_home', methods: ['GET'])]
     public function index(): Response
     {
         return $this->render('index.html.twig');
