@@ -1,7 +1,6 @@
 <?php
 
 
-use App\Controller\ResetPasswordController;
 use App\Entity\ResetPasswordRequest;
 use App\Entity\Student;
 use App\Entity\User;
@@ -68,7 +67,7 @@ class ResetPasswordControllerTest extends WebTestCase
         $this->assertResponseRedirects('/reset-password/check-email');
         $this->assertEmailCount(1);
         $email = $this->getMailerMessage(0);
-        $crawler = self::$client->followRedirect();
+        self::$client->followRedirect();
         $this->assertResponseIsSuccessful();
         $this->assertSelectorTextContains('h1', 'Password Reset Email Sent');
 
@@ -102,7 +101,7 @@ class ResetPasswordControllerTest extends WebTestCase
         $resetUrl = $matches[1];
 
         // Simulate clicking the reset link
-        $crawler = self::$client->request('GET', $resetUrl);
+        self::$client->request('GET', $resetUrl);
         $this->assertResponseRedirects('/reset-password/reset');
         $crawler = self::$client->followRedirect();
         $this->assertResponseIsSuccessful();
@@ -146,7 +145,7 @@ class ResetPasswordControllerTest extends WebTestCase
         // Assert that we are redirected to the check email page and no email is sent
         $this->assertResponseRedirects('/reset-password/check-email');
         $this->assertEmailCount(0);
-        $crawler = self::$client->followRedirect();
+        self::$client->followRedirect();
         $this->assertResponseIsSuccessful();
         $this->assertSelectorTextContains('h1', 'Password Reset Email Sent');
 
@@ -163,7 +162,7 @@ class ResetPasswordControllerTest extends WebTestCase
      */
     public function testResetPasswordWithInvalidToken() : void
     {
-        $crawler = self::$client->request('GET', '/reset-password/reset/invalidtoken1234');
+        self::$client->request('GET', '/reset-password/reset/invalidtoken1234');
 
         // Check if there is redirect after saving token in session
         $this->assertResponseRedirects('/reset-password/reset');

@@ -160,7 +160,7 @@ class ResetPasswordController extends AbstractController
 
         try {
             $mailer->send($email);
-        }catch (\Throwable $e) {
+        } catch (\Throwable $e) {
 
             // If there is an error sending the email, we can log it or handle it as needed.
             // For now, we will just redirect to the check email page.
