@@ -68,6 +68,7 @@ class RegistrationController extends AbstractController
                     ->subject('Please Confirm your Email')
                     ->htmlTemplate('mail/confirmation_email_student.html.twig')
             );
+
             return $this->redirectToRoute('app_check_email');
         }
 
