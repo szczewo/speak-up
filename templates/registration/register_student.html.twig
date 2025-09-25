@@ -60,7 +60,8 @@
                                     class: 'w-full rounded-lg border border-gray-300 px-4 py-2 text-sm text-ink
                                                 focus:border-cobalt focus:ring-cobalt transition !border-gray-300'
                                 }
-                            }) }}                            {% for error in registrationForm.plainPassword.second.vars.errors %}
+                            }) }}
+                            {% for error in registrationForm.plainPassword.second.vars.errors %}
                                 <div class="form-error-message text-sm text-red-600 mt-1 ">{{ error.message }}</div>
                             {% endfor %}
                         </div>
