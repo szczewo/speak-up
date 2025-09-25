@@ -1,9 +1,12 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 
-const App = () => {
-    return <h1>Hello SpeakUp!</h1>;
-};
-
-const root = ReactDOM.createRoot(document.getElementById('root'));
-root.render(<App />);
+// CSS (Tailwind )
+import '../styles/app.css';
+//
+// const App = () => {
+//     return <h1 className='text-xl-center'>Hello SpeakUp!</h1>;
+// };
+//
+// const root = ReactDOM.createRoot(document.getElementById('root'));
+// root.render(<App />);

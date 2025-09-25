@@ -191,7 +191,7 @@ class RegistrationControllerTest extends WebTestCase
         $client = $this->submitRegistrationForm('student', $formData);
 
         $this->assertResponseIsSuccessful();
-        $this->assertSelectorExists('#student_registration_form_agreeTerms + .form-error-message');
+        $this->assertSelectorExists('#student_registration_form_agreeTerms ~ .form-error-message');
     }
 
 
@@ -373,7 +373,7 @@ class RegistrationControllerTest extends WebTestCase
         $client = $this->submitRegistrationForm('teacher', $formData);
 
         $this->assertResponseIsSuccessful();
-        $this->assertSelectorExists('#teacher_registration_form_agreeTerms + .form-error-message');
+        $this->assertSelectorExists('#teacher_registration_form_agreeTerms ~ .form-error-message');
     }
     
     /**

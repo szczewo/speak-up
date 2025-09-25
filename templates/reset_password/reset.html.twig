@@ -1,31 +1,51 @@
+{# @var registrationForm \Symfony\Component\Form\FormView<App\Form\StudentRegistrationFormType> #}
+
 {% extends 'base.html.twig' %}
 
 {% block title %}Reset your password{% endblock %}
 
 {% block body %}
-    <h1>Reset your password</h1>
+    <div class="bg-white md:bg-gradient-to-r from-paper to-white">
+        <div class="max-w-screen-xl pt-15 px-4 lg:px-6 mx-auto grid grid-cols-1 md:grid-cols-2 min-h-screen">
 
-    {{ form_errors(resetForm) }}
-    {{ form_start(resetForm) }}
-    <div class="form-group">
-        <div class="form-group">
-            {{ form_label(resetForm.plainPassword.first) }}
-            {{ form_widget(resetForm.plainPassword.first) }}
-            {% for error in resetForm.plainPassword.first.vars.errors %}
-                <div class="form-error-message">{{ error.message }}</div>
-            {% endfor %}
+              {{ include('partials/_leftColumn.html.twig') }}
+            <div class="flex items-center justify-center md:justify-end py-8 sm:pl-8 bg-white">
+                <div class="w-full max-w-md ">
+                    <h1 class="text-3xl lg:text-4xl font-bold text-cobalt text-center mb-8">Reset your password</h1>
+                    {{ form_errors(resetForm) }}
+                    {{ form_start(resetForm) }}
+                    <div class="space-y-4">
+                        <div>
+                            {{ form_label(resetForm.plainPassword.first, null, {'label_attr': {'class': 'block text-sm font-medium text-ink mb-1'}}) }}
+                            {{ form_widget(resetForm.plainPassword.first,
+                                {'attr': {'class': 'w-full rounded-lg border border-gray-300 px-4 py-2 text-sm text-ink focus:border-gray-600 focus:ring-cobalt'}}) }}
+
+                            {% for error in resetForm.plainPassword.first.vars.errors %}
+                                <div class="form-error-message text-sm text-red-600 mt-1">{{ error.message }}</div>
+                            {% endfor %}
+                        </div>
+
+                        <div>
+                            {{ form_label(resetForm.plainPassword.second, null, {'label_attr': {'class': 'block text-sm font-medium text-ink mb-1'}}) }}
+                            {{ form_widget(resetForm.plainPassword.second, {
+                                attr: {
+                                    class: 'w-full rounded-lg border border-gray-300 px-4 py-2 text-sm text-ink
+                                                focus:border-cobalt focus:ring-cobalt transition !border-gray-300'
+                                }
+                            }) }}
+
+                            {% for error in resetForm.plainPassword.second.vars.errors %}
+                                <div class="form-error-message text-sm text-red-600 mt-1 ">{{ error.message }}</div>
+                            {% endfor %}
+                        </div>
+
+                    </div>
+                    <div class="flex items-center justify-center mt-6">
+                        <button type="submit" class="cursor-pointer uppercase bg-cobalt text-white text-sm  px-8 py-2.5 rounded-lg hover:bg-cobalt-dark transition">Reset password</button>
+                    </div>
+                    {{ form_end(resetForm) }}
+                </div>
+            </div>
         </div>
-        <div class="form-group">
-            {{ form_label(resetForm.plainPassword.second) }}
-            {{ form_widget(resetForm.plainPassword.second) }}
-            {% for error in resetForm.plainPassword.second.vars.errors %}
-                <div class="form-error-message">{{ error.message }}</div>
-            {% endfor %}
-        </div>
-        {% for error in resetForm.plainPassword.vars.errors %}
-            <div class="form-error-message">{{ error.message }}</div>
-        {% endfor %}
     </div>
-        <button class="btn btn-primary">Reset password</button>
-    {{ form_end(resetForm) }}
 {% endblock %}

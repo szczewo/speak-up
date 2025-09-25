@@ -47,7 +47,7 @@ class StudentRegistrationFormType extends AbstractType
                 ]
             ])
             ->add('agreeTerms', CheckboxType::class, [
-                'label' => 'I agree to the <a href="/terms">terms and conditions</a>',
+                'label' => 'I agree to the terms and conditions',
                 'label_html' => true,
                 'mapped' => false,
                 'constraints' => [

@@ -25,6 +25,9 @@ Encore
     // When enabled, Webpack "splits" your files into smaller pieces for greater optimization.
     .splitEntryChunks()
 
+    // enables the Symfony UX Stimulus bridge (used in assets/bootstrap.js)
+    .enableStimulusBridge('./assets/controllers.json')
+
     // will require an extra script tag for runtime.js
     // but, you probably want this, unless you're building a single-page app
     .enableSingleRuntimeChunk()
@@ -62,6 +65,14 @@ Encore
     // React usage
     .enableReactPreset()
 
+    // Tailwind CSS
+    .enablePostCssLoader()
+
+    .copyFiles({
+        from: './assets/fonts',
+        to: 'fonts/[name].[ext]',
+    })
+
     // uncomment to get integrity="..." attributes on your script & link tags
     // requires WebpackEncoreBundle 1.4 or higher
     //.enableIntegrityHashes(Encore.isProduction())
@@ -69,11 +80,12 @@ Encore
     // uncomment if you're having problems with a jQuery plugin
     //.autoProvidejQuery()
 
-    .copyFiles({
-        from: './assets/images',
-        to: 'images/[path][name].[hash:8].[ext]',
-        pattern: /\.(png|jpg|jpeg)$/
-    })
+
+    // .copyFiles({
+    //     from: './assets/images',
+    //     to: 'images/[path][name].[hash:8].[ext]',
+    //     pattern: /\.(png|jpg|jpeg)$/
+    // })
 ;
 
 module.exports = Encore.getWebpackConfig();
