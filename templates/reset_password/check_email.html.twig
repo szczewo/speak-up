@@ -1,13 +1,27 @@
+{# @var registrationForm \Symfony\Component\Form\FormView<App\Form\StudentRegistrationFormType> #}
+
 {% extends 'base.html.twig' %}
 
 {% block title %}Password Reset Email Sent{% endblock %}
 
 {% block body %}
-    <h1>Password Reset Email Sent</h1>
+    <div class="bg-white md:bg-gradient-to-r from-paper to-white">
+        <div class="max-w-screen-xl pt-15 px-4 lg:px-6 mx-auto grid grid-cols-1 md:grid-cols-2 min-h-screen">
 
-    <p>
-        If an account matching your email exists, then an email was just sent that contains a link that you can use to reset your password.
-        This link will expire in {{ resetToken.expirationMessageKey|trans(resetToken.expirationMessageData, 'ResetPasswordBundle') }}.
-    </p>
-    <p>If you don't receive an email please check your spam folder or <a href="{{ path('app_reset_password_request') }}">try again</a>.</p>
+              {{ include('partials/_leftColumn.html.twig') }}
+            <div class="flex items-center justify-center md:justify-end py-8 sm:pl-8 bg-white">
+                <div class="w-full max-w-md ">
+                    <h1 class="text-3xl lg:text-4xl font-bold text-cobalt text-center mb-8">Password Reset Email Sent</h1>
+                    <p class="mb-6">
+                        If an account matching your email exists, then an email was just sent that contains a link that you can use to reset your password.
+                        This link will expire in {{ resetToken.expirationMessageKey|trans(resetToken.expirationMessageData, 'ResetPasswordBundle') }}
+                    </p>
+                    <p class="mb-6">
+                        If you don't receive an email please check your spam folder or
+                        <a href="{{ path('app_reset_password_request') }}" class="text-cobalt font-medium font-semibold hover:underline">try again</a>.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
 {% endblock %}

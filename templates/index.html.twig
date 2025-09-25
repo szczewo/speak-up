@@ -1,4 +1,40 @@
 {% extends "base.html.twig" %}
 
 {% block title %}
+    Welcome to SpeakUp
+{% endblock %}
+
+{% block body %}
+<div class="bg-white md:bg-gradient-to-r from-paper to-white ">
+        <div class="max-w-screen-xl pt-15 px-4 lg:px-6 mx-auto grid grid-cols-1 md:grid-cols-2 min-h-screen">
+
+              {{ include('partials/_leftColumn.html.twig') }}
+
+            <div class="flex items-center justify-center md:justify-end py-12 md:pl-8 bg-white">
+                <div class="w-full max-w-md">
+                    <div class="block md:hidden text-center mb-6">
+                        <h1 class="text-4xl font-bold text-cobalt mb-2">SpeakUp</h1>
+                        <p class="text-base text-ink">Learn languages with real teachers</p>
+                    </div>
+                    <h2 class="text-3xl lg:text-4xl font-bold text-cobalt text-center mb-4">Welcome to SpeakUp</h2>
+                    <p class="text-center text-ink/70 mb-8 uppercase">Your language learning platform</p>
+
+                    <div class="flex flex-col gap-3">
+                        <a href="{{ path('app_register_student') }}" class="uppercase mx-auto bg-cobalt text-white text-sm px-8 py-2.5 rounded-lg hover:bg-cobalt-dark transition">
+                            Register as Student
+                        </a>
+                        <a href="{{ path('app_register_teacher') }}" class="uppercase mx-auto bg-pink text-white text-sm px-8 py-2.5 rounded-lg hover:bg-pink-dark transition">
+                            Register as Teacher
+                        </a>
+                    </div>
+                    <p class="mt-6 text-center text-sm text-ink/70">
+                        Already have an account?
+                        <a href="{{ path('app_login') }}" class="font-semibold text-cobalt font-medium hover:underline">Log in</a>
+                    </p>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
 {% endblock %}

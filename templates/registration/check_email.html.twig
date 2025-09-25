@@ -1,9 +1,24 @@
+{# @var registrationForm \Symfony\Component\Form\FormView<App\Form\StudentRegistrationFormType> #}
+
 {% extends 'base.html.twig' %}
 
-{% block title %}Check your email{% endblock %}
+{% block title %}Thank you for registering!{% endblock %}
 
 {% block body %}
-    <h1>Thank you for registering!</h1>
-    <p>We’ve sent a confirmation link to your email address. Please check your inbox and click the link to activate your account.</p>
-    <a href="">Back to login</a>
+    <div class="bg-white md:bg-gradient-to-r from-paper to-white">
+        <div class="max-w-screen-xl pt-15 px-4 lg:px-6 mx-auto grid grid-cols-1 md:grid-cols-2 min-h-screen">
+
+              {{ include('partials/_leftColumn.html.twig') }}
+            <div class="flex items-center justify-center md:justify-end py-8 sm:pl-8 bg-white">
+                <div class="w-full max-w-md ">
+                    <h1 class="text-3xl lg:text-4xl font-bold text-cobalt text-left mb-8">Thank you for registering!</h1>
+                    <p>We’ve sent a confirmation link to your email address. Please check your inbox and click the link to activate your account.</p>
+                    <p class="mt-6 text-center text-sm text-ink">
+                        Back to
+                        <a href="{{ path('app_home') }}" class="text-cobalt font-medium font-semibold hover:underline">login</a>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
 {% endblock %}

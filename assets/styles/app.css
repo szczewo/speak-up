@@ -1,1 +1,27 @@
+@import "tailwindcss" source(none);
+@import "./fonts.css";
+@source "../../templates/**/*.twig";
+@source "./assets/**/*.js";
+@source "./assets/**/*.jsx";
+@source not "../../public";
 
+@theme {
+    --color-ink: #282828;
+    --color-black: #282828;
+    --color-paper: #F9F6EF;
+    --color-cobalt: #193497;
+    --color-pink: #EDA398;
+    --color-white: #fffdfb;
+
+    --color-ink-dark: #1c1c1c;
+    --color-cobalt-dark: #132880;
+    --color-pink-dark: #cd8a81;
+
+    --color-ink-light: #373737;
+    --color-cobalt-light: #1e3cb1;
+    --color-pink-light: #fbada2;
+}
+
+@theme {
+    --font-sans: "Poppins", ui-sans-serif, system-ui, sans-serif;
+}
