@@ -11,10 +11,10 @@
 - Entities: User (Student/Teacher), Language
 - Environment configuration
 - PHPUnit test setup
+- Basic styling with Tailwind CSS
 
 ## In Progress
 
-- Basic styling with Tailwind CSS
 - Implementation of JWT-based authentication
 - React CRUD API for managing lessons (create/edit/book)
 - Availability management logic (backend)
@@ -64,3 +64,4 @@ This project is part of a full-stack portfolio and designed for job applications
 
 
 Work in progress — feedback and contributions welcome! 😊
+
