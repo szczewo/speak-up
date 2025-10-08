@@ -16,6 +16,7 @@
         "doctrine/lexer": "*",
         "doctrine/migrations": "^3.6",
         "doctrine/orm": "^2.16",
+        "lexik/jwt-authentication-bundle": "^2.21",
         "sensio/framework-extra-bundle": "^6.2",
         "symfony/asset": "6.3.*",
         "symfony/console": "6.3.*",
