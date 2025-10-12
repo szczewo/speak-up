@@ -8,7 +8,7 @@ vendor/
 
 # config
 .env
-.env.*
+.env.test
 
 # editor
 .idea/
@@ -23,7 +23,4 @@ vendor/
 
 mysql-init/
 
-
-###> lexik/jwt-authentication-bundle ###
 /config/jwt/*.pem
-###< lexik/jwt-authentication-bundle ###
