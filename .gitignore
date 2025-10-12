@@ -23,4 +23,5 @@ vendor/
 
 mysql-init/
 
+# jwt
 /config/jwt/*.pem
