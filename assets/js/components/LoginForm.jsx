@@ -40,8 +40,8 @@ export default function LoginForm() {
         }
         catch (error){
             setError(error.message);
-            console.log("Response status:", response.status);
-            console.log("Response data:", data);
+            // Optionally log the error object itself for debugging
+            console.log("Login error:", error);
         }
     };
 
