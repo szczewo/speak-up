@@ -51,7 +51,7 @@ class JWTAuthenticationListener
         $exception = $event->getException();
         $message = 'Authentication failed.';
 
-        if ( $exception instanceof BadCredentialsException){
+        if ($exception instanceof BadCredentialsException){
             $message = 'Invalid credentials';
         } elseif ($exception instanceof CustomUserMessageAccountStatusException){
            $message = $exception->getMessageKey();
