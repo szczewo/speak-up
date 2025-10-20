@@ -46,7 +46,7 @@ class LoginTest extends WebTestCase
         $unverified->setEmail('unverified@example.com')
             ->setName('Unverified')
             ->setLastName('User')
-            ->setPassword($hasher->hashPassword($verifiedUser, 'Password123-'))
+            ->setPassword($hasher->hashPassword($unverified, 'Password123-'))
             ->setIsVerified(false)
             ->setCreatedAt(new DateTimeImmutable());
         $em->persist($unverified);
