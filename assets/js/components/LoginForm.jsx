@@ -35,7 +35,7 @@ export default function LoginForm() {
             }
 
             await login(data.user, data.token)
-            console.log('Zalogowano! Token:', data.token);
+            console.log('Logged in! Token:', data.token);
             navigate("/dashboard");
         }
         catch (error){
