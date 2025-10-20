@@ -1,0 +1,92 @@
+{# @var registrationForm \Symfony\Component\Form\FormView<App\Form\TeacherRegistrationFormType> #}
+
+{% extends '../../base.html.twig' %}
+
+{% block title %}Register as a Teacher{% endblock %}
+
+{% block body %}
+    <div class="bg-white md:bg-gradient-to-r from-paper to-white">
+        <div class="max-w-screen-xl pt-15 px-4 lg:px-6 mx-auto grid grid-cols-1 md:grid-cols-2 min-h-screen">
+
+              {{ include('partials/_leftColumn.html.twig') }}
+            <div class="flex items-center justify-center md:justify-end py-8 sm:pl-8 bg-white">
+                <div class="w-full max-w-md ">
+                    <h1 class="text-3xl lg:text-4xl font-bold text-cobalt text-center mb-8">Register as a Teacher</h1>
+                    {% for flash_error in app.flashes('verify_email_error') %}
+                        <div class="alert alert-danger" role="alert">{{ flash_error }}</div>
+                    {% endfor %}
+
+                    {{ form_errors(registrationForm) }}
+                    {{ form_start(registrationForm) }}
+                    <div class="space-y-4">
+                        <div>
+                            {{ form_label(registrationForm.name, null, {'label_attr': {'class': 'block text-sm font-medium text-ink mb-1'}}) }}
+                            {{ form_widget(registrationForm.name, {'attr': {'class': 'w-full rounded-lg border border-gray-300 px-4 py-2 text-sm text-ink focus:border-cobalt focus:ring-cobalt'}}) }}
+                            {% for error in registrationForm.name.vars.errors %}
+                                <div class="form-error-message text-sm text-red-600 mt-1">{{ error.message }}</div>
+                            {% endfor %}
+                        </div>
+
+                        <div>
+                            {{ form_label(registrationForm.lastName, null, {'label_attr': {'class': 'block text-sm font-medium text-ink mb-1'}}) }}
+                            {{ form_widget(registrationForm.lastName, {'attr': {'class': 'w-full rounded-lg border border-gray-300 px-4 py-2 text-sm text-ink focus:border-cobalt focus:ring-cobalt'}}) }}
+                            {% for error in registrationForm.lastName.vars.errors %}
+                                <div class="form-error-message text-sm text-red-600 mt-1">{{ error.message }}</div>
+                            {% endfor %}
+                        </div>
+
+                        <div>
+                            {{ form_label(registrationForm.email, null, {'label_attr': {'class': 'block text-sm font-medium text-ink mb-1'}}) }}
+                            {{ form_widget(registrationForm.email, {'attr': {'class': 'w-full rounded-lg border border-gray-300 px-4 py-2 text-sm text-ink focus:border-cobalt focus:ring-cobalt'}}) }}
+                            {% for error in registrationForm.email.vars.errors %}
+                                <div class="form-error-message text-sm text-red-600 mt-1">{{ error.message }}</div>
+                            {% endfor %}
+                        </div>
+
+                        <div>
+                            {{ form_label(registrationForm.plainPassword.first, null, {'label_attr': {'class': 'block text-sm font-medium text-ink mb-1'}}) }}
+                            {{ form_widget(registrationForm.plainPassword.first,
+                                {'attr': {'class': 'w-full rounded-lg border border-gray-300 px-4 py-2 text-sm text-ink focus:border-gray-600 focus:ring-cobalt'}}) }}
+
+                            {% for error in registrationForm.plainPassword.first.vars.errors %}
+                                <div class="form-error-message text-sm text-red-600 mt-1">{{ error.message }}</div>
+                            {% endfor %}
+                        </div>
+
+                        <div>
+                            {{ form_label(registrationForm.plainPassword.second, null, {'label_attr': {'class': 'block text-sm font-medium text-ink mb-1'}}) }}
+                            {{ form_widget(registrationForm.plainPassword.second, {
+                                attr: {
+                                    class: 'w-full rounded-lg border border-gray-300 px-4 py-2 text-sm text-ink
+                                    focus:border-cobalt focus:ring-cobalt transition !border-gray-300'
+                                }
+                            }) }}
+                            {% for error in registrationForm.plainPassword.second.vars.errors %}
+                                <div class="form-error-message text-sm text-red-600 mt-1">{{ error.message }}</div>
+                            {% endfor %}
+                        </div>
+
+
+                    </div>
+                    <div class="flex items-center justify-between mt-6">
+                        <div class="flex items-center space-x-2">
+                            {{ form_widget(registrationForm.agreeTerms, {'attr': {'class': 'rounded border-gray-300 text-cobalt focus:ring-cobalt'}}) }}
+                            {{ form_label(registrationForm.agreeTerms, null, {'label_attr': {'class': 'text-sm text-ink'}}) }}
+                            {% for error in registrationForm.agreeTerms.vars.errors %}
+                                <div class="form-error-message text-sm text-red-600 mt-1">{{ error.message }}</div>
+                            {% endfor %}
+                        </div>
+                        <button type="submit" class="cursor-pointer uppercase bg-pink text-white text-sm  px-8 py-2.5 rounded-lg hover:bg-pink-dark transition">Register</button>
+                    </div>
+                    {{ form_end(registrationForm) }}
+                    <p class="mt-6 text-center text-sm text-ink/70">
+                        Already have an account?
+                        <a href="{{ path('app_login') }}" class="text-cobalt font-medium font-semibold hover:underline">Log in</a>
+                    </p>
+                </div>
+            </div>
+
+        </div>
+    </div>
+{% endblock %}
+

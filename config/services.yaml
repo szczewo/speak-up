@@ -21,14 +21,14 @@ services:
             - '../src/DependencyInjection/'
             - '../src/Entity/'
             - '../src/Kernel.php'
-    App\Controller\RegistrationController:
-        arguments:
-            $fromAddress: '%app.mailer_from_address%'
-            $fromName: '%app.mailer_from_name%'
-    App\Controller\ResetPasswordController:
-        arguments:
-            $fromAddress: '%app.mailer_from_address%'
-            $fromName: '%app.mailer_from_name%'
+            - '../src/Legacy/'
+
+
+    App\EventListener\JWTAuthenticationListener:
+        tags:
+            - { name: kernel.event_listener, event: lexik_jwt_authentication.on_authentication_success, method: onAuthenticationSuccess }
+            - { name: kernel.event_listener, event: lexik_jwt_authentication.on_authentication_failure, method: onAuthenticationFailure }
+
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones
 

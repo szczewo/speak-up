@@ -1,8 +1,8 @@
 @import "tailwindcss" source(none);
 @import "./fonts.css";
-@source "../../templates/**/*.twig";
-@source "./assets/**/*.js";
-@source "./assets/**/*.jsx";
+@source "../../templates/base.html.twig";
+@source "../js/**/*.js";
+@source "../js/**/*.jsx";
 @source not "../../public";
 
 @theme {
