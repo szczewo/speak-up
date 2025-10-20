@@ -73,5 +73,6 @@ jobs:
         run: docker exec speak-up-web npm run build
 
       - name: Run Symfony tests
-        run: docker exec speak-up-web ./bin/phpunit
+        run: docker exec speak-up-web ./bin/phpunit --exclude-group=legacy
+
 

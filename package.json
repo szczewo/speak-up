@@ -33,6 +33,7 @@
         "@babel/preset-react": "^7.26.3",
         "react": "^19.0.0",
         "react-dom": "^19.0.0",
+        "react-router-dom": "^7.9.4",
         "tiny-slider": "^2.9.4"
     }
 }

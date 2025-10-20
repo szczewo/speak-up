@@ -3,7 +3,7 @@
     <head>
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1"/>
-        <title>{% block title %}{% endblock %} - Speak Up</title>
+        <title>Speak Up</title>
         {#
         Those two blocks defines frontend entrypoint for CSS and JavaScript assets
         See https://symfony.com/doc/current/frontend.html
@@ -17,31 +17,6 @@
         <link rel="icon" type="image/x-icon" href="" />
     </head>
     <body class="bg-paper">
-    <nav class="fixed right-0 left-0 bg-white border-gray-200 px-4 lg:px-6 py-2.5 dark:bg-gray-800 shadow-sm  z-100">
-        <div class="flex flex-wrap items-center justify-between max-w-screen-xl mx-auto">
-            <a href="{{ path('app_home') }}" class="flex items-center">
-                <span class="self-center text-xl font-semibold whitespace-nowrap dark:text-white">SpeakUp</span>
-            </a>
-            <div class="flex items-center lg:order-2">
-                {% if app.user %}
-                    <div class="font-10 text-ink dark:text-paper mr-4"> Hello, {{ app.user.userIdentifier }}!</div>
-
-                    <div class="mr-3">
-                        <a href="{{ path('app_logout') }}" class="text-white bg-cobalt hover:bg-cobalt-dark focus:ring-2 focus:ring-blue-300 font-medium rounded-lg text-sm px-4 lg:px-5 py-2 lg:py-2.5 mr-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800">Logout</a>
-                    </div>
-                {% else %}
-                        <a href="{{ path('app_login') }}" class="text-ink  shadow-sm dark:text-white hover:bg-gray-50 focus:ring-2 focus:ring-cobalt   font-medium rounded-lg text-sm px-4 lg:px-5 py-2 lg:py-2.5 mr-2 dark:hover:bg-gray-700 focus:outline-none dark:focus:ring-gray-800">Log in</a>
-                        <a href="{{ path('app_home') }}" class="text-white bg-cobalt hover:bg-cobalt-dark focus:ring-2 focus:ring-blue-300 font-medium rounded-lg text-sm px-4 lg:px-5 py-2 lg:py-2.5 mr-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800">Get started</a>
-                {% endif %}
-            </div>
-            <div class="items-center justify-between hidden w-full lg:flex lg:w-auto lg:order-1" id="mobile-menu-2">
-                <ul class="flex flex-col mt-4 font-medium lg:flex-row lg:space-x-8 lg:mt-0">
-                </ul>
-            </div>
-        </div>
-    </nav>
-        <main id="main ">
-            {% block body %}{% endblock %}
-        </main>
+        <div id="root"></div>
     </body>
 </html>
