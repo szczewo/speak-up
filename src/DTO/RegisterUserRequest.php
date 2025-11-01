@@ -14,7 +14,7 @@ class RegisterUserRequest
     #[Assert\Length(min: 8)]
     #[Assert\Regex(
         pattern: '/^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[\W_]).{8,}$/',
-        message: 'Password must contain must contain an uppercase letter, lowercase letter, number and special character.'
+        message: 'Password must contain an uppercase letter, lowercase letter, number and special character.'
     )]
     public string $password;
 
