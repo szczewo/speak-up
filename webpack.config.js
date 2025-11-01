@@ -41,7 +41,6 @@ Encore
     .enableBuildNotifications()
     .enableSourceMaps(!Encore.isProduction())
     // enables hashed filenames (e.g. app.abc123.css)
-    .enableVersioning(Encore.isProduction())
 
     // configure Babel
     // .configureBabel((config) => {
@@ -85,5 +84,15 @@ Encore
     //     pattern: /\.(png|jpg|jpeg)$/
     // })
 ;
+
+if (Encore.isProduction()) {
+    Encore.enableVersioning(true);
+} else {
+    Encore.enableVersioning(false);
+    Encore.configureDevServerOptions(options => {
+        options.liveReload = true;
+        options.hot = true;
+    });
+}
 
 module.exports = Encore.getWebpackConfig();

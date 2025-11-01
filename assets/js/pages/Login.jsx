@@ -1,6 +1,7 @@
 import React, {useEffect} from "react";
 import LoginForm from "../components/LoginForm";
 import {LeftColumnContent} from "../components/LeftColumnContent";
+import {Link} from "react-router-dom";
 
 export default function Login() {
     useEffect(() => {
@@ -19,9 +20,9 @@ export default function Login() {
                         <LoginForm/>
                         <p className="mt-6 text-center text-sm text-ink">
                             Don't have an account?
-                            <a href="/get-started" className="text-cobalt font-medium font-semibold hover:underline">
-                                 Get started
-                            </a>
+                            <Link to="/register" className="text-cobalt font-medium font-semibold hover:underline ml-1">
+                                Get started
+                            </Link>
                         </p>
                         <p className="mt-6 text-center text-sm text-ink">
                             <a href="/reset-password"
