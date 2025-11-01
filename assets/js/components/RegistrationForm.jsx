@@ -34,7 +34,7 @@ export default function RegistrationForm({ role, onSuccess }) {
         }
         if (!form.lastName.trim()) {
             errors.lastName = "Last name is required.";
-        } else if (form.name.length > 45)
+        } else if (form.lastName.length > 45)
             errors.lastName = "Last name cannot exceed 45 characters."; {
         }
         if (!form.email.trim()) {
