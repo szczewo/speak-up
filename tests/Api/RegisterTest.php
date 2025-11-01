@@ -86,7 +86,7 @@ class RegisterTest extends WebTestCase
         $client->jsonRequest('POST', '/api/register', $payload);
         $this->assertResponseStatusCodeSame(201);
 
-        // Second attempt isong the same email
+        // Second attempt using the same email
         $client->jsonRequest('POST', '/api/register', $payload);
         $this->assertResponseStatusCodeSame(409);
 
