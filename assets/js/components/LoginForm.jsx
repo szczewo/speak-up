@@ -1,14 +1,25 @@
 import React, {useContext} from "react";
 import { useState } from "react";
-import {useNavigate} from "react-router-dom";
+import {useNavigate, useSearchParams} from "react-router-dom";
 import {AuthContext} from "../context/AuthContext";
 
 export default function LoginForm() {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [error, setError] = useState("");
+    const [searchParams] = useSearchParams();
     const navigate = useNavigate();
     const { user, login } = useContext(AuthContext);
+    const verified = searchParams.get("verified");
+
+
+    let infoMessage = "";
+    if (verified === "success") {
+        infoMessage = "Your email has been verified. You can now log in.";
+    } else if (verified === "error") {
+        infoMessage = "Verification failed or link has expired.";
+    }
+
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -47,6 +58,15 @@ export default function LoginForm() {
 
     return (
         <>
+            {infoMessage && (
+                <div className={`mb-4 px-3 py-2 rounded-lg text-sm text-center mt-2
+                ${verified === "success"
+                    ? "bg-green-100 border border-green-400 text-green-700"
+                    : "bg-red-100 border border-red-400 text-red-700"}`}>
+                    {infoMessage}
+                </div>
+            )}
+
             {error && (
                 <div className="mb-4 bg-red-100 border border-red-400 text-red-700 px-3 py-2 rounded-lg text-sm text-center mt-2">
                     {error}

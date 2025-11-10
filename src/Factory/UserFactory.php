@@ -20,11 +20,17 @@ class UserFactory
             default => throw new \InvalidArgumentException('Invalid user type: ' . $dto->type),
         };
 
+        $roles = match ($dto->type) {
+            'student' => ['ROLE_USER','ROLE_STUDENT'],
+            'teacher' => ['ROLE_USER','ROLE_TEACHER'],
+        };
+
         $user->setEmail($dto->email)
-             ->setName($dto->name)
-             ->setLastName($dto->lastName)
+            ->setName($dto->name)
+            ->setLastName($dto->lastName)
             ->setIsVerified(false)
-            ->setCreatedAt(new \DateTimeImmutable());
+            ->setCreatedAt(new \DateTimeImmutable())
+            ->setRoles($roles);
 
         return $user;
     }
