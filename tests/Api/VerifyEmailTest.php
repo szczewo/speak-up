@@ -63,7 +63,7 @@ class VerifyEmailTest extends WebTestCase
     {
         $client = self::$client;
 
-        $client->jsonRequest('POST', '/api/verify/email', ['token' => 'valid-token']);
+        $client->jsonRequest('POST', '/api/verify-email', ['token' => 'valid-token']);
         $this->assertResponseIsSuccessful();
         $this->assertJsonResponseContains(
             $client->getResponse(), [
@@ -81,7 +81,7 @@ class VerifyEmailTest extends WebTestCase
     public function testVerificationWithInvalidToken(): void
     {
         $client = self::$client;
-        $client->jsonRequest('POST', '/api/verify/email', ['token' => 'invalid-token']);
+        $client->jsonRequest('POST', '/api/verify-email', ['token' => 'invalid-token']);
         $this->assertResponseStatusCodeSame(400);
         $this->assertJsonResponseContains(
             $client->getResponse(), [
@@ -100,7 +100,7 @@ class VerifyEmailTest extends WebTestCase
     public function testVerificationWithExpiredToken(): void
     {
         $client = self::$client;
-        $client->jsonRequest('POST', '/api/verify/email', ['token' => 'expired-token']);
+        $client->jsonRequest('POST', '/api/verify-email', ['token' => 'expired-token']);
         $this->assertResponseStatusCodeSame(400);
         $this->assertJsonResponseContains(
             $client->getResponse(), [
@@ -119,7 +119,7 @@ class VerifyEmailTest extends WebTestCase
     public function testVerificationWithMissingToken(): void
     {
         $client = self::$client;
-        $client->jsonRequest('POST', '/api/verify/email', []);
+        $client->jsonRequest('POST', '/api/verify-email', []);
         $this->assertResponseStatusCodeSame(400);
         $this->assertJsonResponseContains(
             $client->getResponse(), [
