@@ -2,21 +2,16 @@
 
 namespace App\Controller;
 
-use App\DTO\RegisterUserRequest;
-use App\Exception\EmailAlreadyInUseException;
+
+
 use App\Handler\UserEmailVerificationHandler;
-use App\Handler\UserRegistrationHandler;
+
 use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\Validator\Validator\ValidatorInterface;
-use Symfony\Component\Serializer\SerializerInterface;
-
-
-
 class VerifyEmailController extends AbstractController
 {
 
