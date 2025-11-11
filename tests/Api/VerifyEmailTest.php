@@ -93,7 +93,8 @@ class VerifyEmailTest extends WebTestCase
     }
 
 
-    /** Tests email verification with an expired token.
+    /**
+     * Tests email verification with an expired token.
      * @return void
      */
     #[Group('api')]
