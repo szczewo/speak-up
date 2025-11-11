@@ -4,7 +4,6 @@ namespace App\Controller;
 
 use App\DTO\RegisterUserRequest;
 use App\Exception\EmailAlreadyInUseException;
-use App\Handler\UserEmailVerificationHandler;
 use App\Handler\UserRegistrationHandler;
 use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
