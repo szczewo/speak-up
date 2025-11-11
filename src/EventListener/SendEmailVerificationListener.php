@@ -11,10 +11,7 @@ use App\Service\EmailService;
 class SendEmailVerificationListener
 {
 
-    public function __construct
-    (
-        private EmailService $emailService
-    ){}
+    public function __construct(private EmailService $emailService) {}
 
     public function onUserRegistered(UserRegisteredEvent $event)
     {
