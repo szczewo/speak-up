@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\DTO\RegisterUserRequest;
 use App\Exception\EmailAlreadyInUseException;
 use App\Handler\UserRegistrationHandler;
+use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -19,11 +20,8 @@ class RegistrationController extends AbstractController
 {
 
     public function __construct(
-//        private string $fromAddress,
-//        private string $fromName,
-    )
-    {
-    }
+        private LoggerInterface $logger
+    ){}
 
 
     /**
@@ -40,7 +38,7 @@ class RegistrationController extends AbstractController
         Request                 $request,
         ValidatorInterface      $validator,
         SerializerInterface     $serializer,
-        UserRegistrationHandler $handler
+        UserRegistrationHandler $handler,
     ): JsonResponse
     {
         $dto = $serializer->deserialize(
@@ -61,10 +59,14 @@ class RegistrationController extends AbstractController
                 'errors' => $errorMessages
             ], Response::HTTP_BAD_REQUEST);
         }
-
         try {
             $handler->handle($dto);
         } catch (EmailAlreadyInUseException $e) {
+            $this->logger->error('Email already in use.', [
+                'exception' => $e,
+                'message' => $e->getMessage(),
+            ]);
+
             return new JsonResponse([
                 'status' => 'error',
                 'code' => 'EMAIL_ALREADY_IN_USE',
@@ -72,6 +74,11 @@ class RegistrationController extends AbstractController
                 'errors' => ['email' => 'Email already in use.']
             ], Response::HTTP_CONFLICT);
         } catch (\Exception $e) {
+            $this->logger->error('Registration failed', [
+                'exception' => $e,
+                'message' => $e->getMessage(),
+            ]);
+
             return new JsonResponse([
                 'status' => 'error',
                 'code' => 'REGISTRATION_FAILED',
@@ -84,5 +91,6 @@ class RegistrationController extends AbstractController
             'message' => 'User registered successfully'
         ], Response::HTTP_CREATED);
     }
+
 }
 

@@ -2,6 +2,7 @@
 
 namespace App\Tests\Api;
 
+use App\Tests\Trait\JsonResponseAsserts;
 use Doctrine\ORM\EntityManagerInterface;
 use PHPUnit\Framework\Attributes\Group;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
@@ -9,6 +10,8 @@ use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 class RegisterTest extends WebTestCase
 {
     private static $client;
+
+    use JsonResponseAsserts;
 
     protected function setUp(): void
     {
@@ -26,19 +29,6 @@ class RegisterTest extends WebTestCase
             ->execute();
     }
 
-    /**
-     * Helper function to assert that the JSON response contains expected key-value pairs.
-     * @param array $expected
-     * @return void
-     */
-    protected function assertJsonResponseContains(array $expected): void
-    {
-        $response = self::$client->getResponse();
-        $json = json_decode($response->getContent(), true);
-        foreach ($expected as $key => $value) {
-            $this->assertEquals($value, $json[$key] ?? null);
-        }
-    }
 
     /**
      * Tests successful user registration.
@@ -60,10 +50,12 @@ class RegisterTest extends WebTestCase
         $client->jsonRequest('POST', '/api/register', $payload);
         $this->assertResponseStatusCodeSame(201);
 
-        $this->assertJsonResponseContains([
-            'status' => 'success',
-            'message' => 'User registered successfully'
-        ]);
+        $this->assertJsonResponseContains(
+            $client->getResponse(), [
+                'status' => 'success',
+                'message' => 'User registered successfully'
+            ]
+        );
     }
 
     /**
@@ -90,11 +82,13 @@ class RegisterTest extends WebTestCase
         $client->jsonRequest('POST', '/api/register', $payload);
         $this->assertResponseStatusCodeSame(409);
 
-        $this->assertJsonResponseContains([
-            'status' => 'error',
-            'code' => 'EMAIL_ALREADY_IN_USE',
-            'message' => 'Email already in use.',
-        ]);
+        $this->assertJsonResponseContains(
+            $client->getResponse(), [
+                'status' => 'error',
+                'code' => 'EMAIL_ALREADY_IN_USE',
+                'message' => 'Email already in use.',
+            ]
+        );
     }
 
     /**
@@ -116,11 +110,13 @@ class RegisterTest extends WebTestCase
 
         $client->jsonRequest('POST', '/api/register', $payload);
         $this->assertResponseStatusCodeSame(400);
-        $this->assertJsonResponseContains([
-            'status' => 'error',
-            'code' => 'INVALID_PAYLOAD',
-            'message' => 'Invalid request data format.',
-        ]);
+        $this->assertJsonResponseContains(
+            $client->getResponse(), [
+                'status' => 'error',
+                'code' => 'INVALID_PAYLOAD',
+                'message' => 'Invalid request data format.',
+            ]
+        );
 
     }
 }

@@ -1,0 +1,13 @@
+{% extends "mail/base.html.twig"  %}
+
+{% block content %}
+<h1>Hi! Please confirm your email!</h1>
+
+<p>Hello {{ name }}! You are just one click away from starting to learn foreign languages at SpeakUp.</p>
+<p>
+    Please confirm your email address by clicking the following link: <br><br>
+    <a href="{{ verificationUrl }}">Confirm my Email</a>.
+    This link will expire in {{ verificationTokenExpiresAt }}.
+</p>
+{% endblock %}
+

@@ -6,6 +6,7 @@ import Login from "./pages/Login";
 import Dashboard from "./pages/Dashboard";
 import Register from "./pages/Register";
 import CheckEmail from "./pages/CheckEmail";
+import VerifyEmail from "./pages/VerifyEmail";
 
 function AppContent() {
     const { user } = useContext(AuthContext);
@@ -27,6 +28,7 @@ function AppContent() {
                         path="/dashboard"
                         element={user ? <Dashboard /> : <Navigate to="/login" />}
                     />
+                    <Route path={"/verify-email"} element={<VerifyEmail />} />
                 </Routes>
             </main>
         </Router>

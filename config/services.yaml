@@ -6,6 +6,7 @@
 parameters:
     app.mailer_from_address: '%env(APP_MAILER_FROM_ADDRESS)%'
     app.mailer_from_name: '%env(APP_MAILER_FROM_NAME)%'
+    app.frontend_url: '%env(FRONTEND_URL)%'
 
 services:
     # default configuration for services in *this* file
@@ -29,6 +30,15 @@ services:
             - { name: kernel.event_listener, event: lexik_jwt_authentication.on_authentication_success, method: onAuthenticationSuccess }
             - { name: kernel.event_listener, event: lexik_jwt_authentication.on_authentication_failure, method: onAuthenticationFailure }
 
+    App\Service\EmailService:
+        arguments:
+            $fromAddress: '%app.mailer_from_address%'
+            $fromName: '%app.mailer_from_name%'
+            $frontendUrl: '%app.frontend_url%'
+
+    App\EventListener\SendEmailVerificationListener:
+        tags:
+            - { name: kernel.event_listener, event: 'user.registered', method: onUserRegistered }
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones
 
