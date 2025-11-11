@@ -1,14 +1,18 @@
 <?php
 
-namespace App\Tests\Api;
+namespace Api;
 
+use App\Entity\Student;
+use App\Tests\Trait\JsonResponseAsserts;
 use Doctrine\ORM\EntityManagerInterface;
 use PHPUnit\Framework\Attributes\Group;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
-class RegisterTest extends WebTestCase
+class VerifyEmailTest extends WebTestCase
 {
     private static $client;
+
+    use JsonResponseAsserts;
 
     protected function setUp(): void
     {
@@ -21,106 +25,109 @@ class RegisterTest extends WebTestCase
         $em->createQuery('DELETE FROM App\Entity\User u WHERE u.email in (:email)')
             ->setParameter('email',
                 [
-                    'test@example.com',
+                    'valid@example.com',
+                    'expired@example.com'
                 ])
             ->execute();
+
+        $user = new Student();
+        $user->setEmail('valid@example.com');
+        $user->setName('Test');
+        $user->setLastName('User')
+            ->setPassword('hashedpassword')
+            ->setIsVerified(false)
+            ->setVerificationToken('valid-token')
+            ->setVerificationTokenExpiresAt(new \DateTimeImmutable('+1 hour'));
+
+        $userExpired = new Student();
+        $userExpired->setEmail('expired@example.com')
+            ->setName('Expired')
+            ->setLastName('User')
+            ->setPassword('hashedpassword')
+            ->setIsVerified(false)
+            ->setVerificationToken('expired-token')
+            ->setVerificationTokenExpiresAt(new \DateTimeImmutable('-1 hour'));
+
+        $em->persist($user);
+        $em->persist($userExpired);
+        $em->flush();
     }
 
-    /**
-     * Helper function to assert that the JSON response contains expected key-value pairs.
-     * @param array $expected
-     * @return void
-     */
-    protected function assertJsonResponseContains(array $expected): void
-    {
-        $response = self::$client->getResponse();
-        $json = json_decode($response->getContent(), true);
-        foreach ($expected as $key => $value) {
-            $this->assertEquals($value, $json[$key] ?? null);
-        }
-    }
 
     /**
-     * Tests successful user registration.
+     * Tests successful email verification.
      * @return void
      */
     #[Group('api')]
-    public function testSuccessfulRegistration(): void
+    public function testVerificationWithValidToken(): void
     {
         $client = self::$client;
 
-        $payload = [
-            'email' => 'test@example.com',
-            'password' => 'Password123-',
-            'name' => 'Test',
-            'lastName' => 'Student',
-            'type' => 'student'
-        ];
-
-        $client->jsonRequest('POST', '/api/register', $payload);
-        $this->assertResponseStatusCodeSame(201);
-
-        $this->assertJsonResponseContains([
+        $client->jsonRequest('POST', '/api/verify/email', ['token' => 'valid-token']);
+        $this->assertResponseIsSuccessful();
+        $this->assertJsonResponseContains(
+            $client->getResponse(), [
             'status' => 'success',
-            'message' => 'User registered successfully'
+            'message' => 'Email verified successfully.'
         ]);
     }
 
+
     /**
-     * Tests registration with an existing email.
+     * Tests email verification with an invalid token.
      * @return void
      */
     #[Group('api')]
-   public function testRegistrationWithExistingEmail(): void
+    public function testVerificationWithInvalidToken(): void
     {
         $client = self::$client;
-
-        $payload = [
-            'email' => 'test@example.com',
-            'password' => 'Password123-',
-            'name' => 'Test',
-            'lastName' => 'Student',
-            'type' => 'student'
-        ];
-
-        $client->jsonRequest('POST', '/api/register', $payload);
-        $this->assertResponseStatusCodeSame(201);
-
-        // Second attempt using the same email
-        $client->jsonRequest('POST', '/api/register', $payload);
-        $this->assertResponseStatusCodeSame(409);
-
-        $this->assertJsonResponseContains([
-            'status' => 'error',
-            'code' => 'EMAIL_ALREADY_IN_USE',
-            'message' => 'Email already in use.',
-        ]);
-    }
-
-    /**
-     * Tests registration with invalid payload.
-     * @return void
-     */
-    #[Group('api')]
-    public function testRegistrationWithInvalidPayload(): void
-    {
-        $client = self::$client;
-
-        $payload = [
-            'email' => 'invalid-email',
-            'password' => 'short',
-            'name' => '',
-            'lastName' => 'Student',
-            'type' => ''
-        ];
-
-        $client->jsonRequest('POST', '/api/register', $payload);
+        $client->jsonRequest('POST', '/api/verify/email', ['token' => 'invalid-token']);
         $this->assertResponseStatusCodeSame(400);
-        $this->assertJsonResponseContains([
-            'status' => 'error',
-            'code' => 'INVALID_PAYLOAD',
-            'message' => 'Invalid request data format.',
-        ]);
-
+        $this->assertJsonResponseContains(
+            $client->getResponse(), [
+                'status' => 'error',
+                'code' => 'VERIFICATION_FAILED',
+                'message' => 'Email verification failed.'
+            ]
+        );
     }
+
+
+    /** Tests email verification with an expired token.
+     * @return void
+     */
+    #[Group('api')]
+    public function testVerificationWithExpiredToken(): void
+    {
+        $client = self::$client;
+        $client->jsonRequest('POST', '/api/verify/email', ['token' => 'expired-token']);
+        $this->assertResponseStatusCodeSame(400);
+        $this->assertJsonResponseContains(
+            $client->getResponse(), [
+                'status' => 'error',
+                'code' => 'VERIFICATION_FAILED',
+                'message' => 'Email verification failed.'
+            ]
+        );
+    }
+
+    /**
+     * Tests email verification with a missing token.
+     * @return void
+     */
+    #[Group('api')]
+    public function testVerificationWithMissingToken(): void
+    {
+        $client = self::$client;
+        $client->jsonRequest('POST', '/api/verify/email', []);
+        $this->assertResponseStatusCodeSame(400);
+        $this->assertJsonResponseContains(
+            $client->getResponse(), [
+                'status' => 'error',
+                'code' => 'MISSING_TOKEN',
+                'message' => 'Missing verification token.'
+            ]
+        );
+    }
+
 }
