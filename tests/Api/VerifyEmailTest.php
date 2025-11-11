@@ -1,6 +1,6 @@
 <?php
 
-namespace Api;
+namespace App\Tests\Api;
 
 use App\Entity\Student;
 use App\Tests\Trait\JsonResponseAsserts;
