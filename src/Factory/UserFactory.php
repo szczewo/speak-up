@@ -6,6 +6,7 @@ use App\DTO\RegisterUserRequest;
 use App\Entity\Student;
 use App\Entity\Teacher;
 use App\Entity\User;
+use App\Enum\UserType;
 
 /**
  * Factory to create User entities from DTOs
@@ -15,14 +16,15 @@ class UserFactory
     public function createFromDto(RegisterUserRequest $dto) : User
     {
         $user = match ($dto->type) {
-            'student' => new Student(),
-            'teacher' => new Teacher(),
-            default => throw new \InvalidArgumentException('Invalid user type: ' . $dto->type),
+            UserType::STUDENT => new Student(),
+            UserType::TEACHER => new Teacher(),
+            default => throw new \InvalidArgumentException('Invalid user type: ' . $dto->type->value),
         };
 
         $roles = match ($dto->type) {
-            'student' => ['ROLE_USER','ROLE_STUDENT'],
-            'teacher' => ['ROLE_USER','ROLE_TEACHER'],
+            UserType::STUDENT => ['ROLE_USER','ROLE_STUDENT'],
+            UserType::TEACHER => ['ROLE_USER','ROLE_TEACHER'],
+            default => throw new \Exception('Unexpected match value'),
         };
 
         $user->setEmail($dto->email)

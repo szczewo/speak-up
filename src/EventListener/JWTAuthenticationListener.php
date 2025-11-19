@@ -24,21 +24,13 @@ class JWTAuthenticationListener
         if (!$user instanceof UserInterface) {
             return;
         }
-        $type = null;
-        if ($user instanceof Student){
-            $type = 'student';
-        } elseif ($user instanceof Teacher){
-            $type = 'teacher';
-        } else {
-            $type = 'user';
-        }
 
         $userData = [
             'id' => $user->getId(),
             'email' => $user->getEmail(),
             'name' => $user->getName(),
             'lastName' => $user->getLastName(),
-            'type' => $type,
+            'type' => $user->getType()->value,
         ];
 
         $data = $event->getData();

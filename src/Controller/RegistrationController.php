@@ -11,6 +11,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Serializer\Exception\InvalidArgumentException;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 use Symfony\Component\Serializer\SerializerInterface;
 
@@ -41,10 +42,19 @@ class RegistrationController extends AbstractController
         UserRegistrationHandler $handler,
     ): JsonResponse
     {
-        $dto = $serializer->deserialize(
-            $request->getContent(),
-            RegisterUserRequest::class,
-            'json');
+        try{
+            $dto = $serializer->deserialize(
+                $request->getContent(),
+                RegisterUserRequest::class,
+                'json');
+        } catch (InvalidArgumentException | \ValueError $e) {
+            return new JsonResponse([
+                'status' => 'error',
+                'code' => 'INVALID_PAYLOAD',
+                'message' => 'Invalid request data format.'
+            ], Response::HTTP_BAD_REQUEST);
+        }
+
         $errors = $validator->validate($dto);
 
         if (count($errors) > 0) {
