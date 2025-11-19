@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use App\Enum\UserType;
 use App\Repository\UserRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -166,7 +167,7 @@ abstract class User implements UserInterface, PasswordAuthenticatedUserInterface
      * Gets user's type.
      * @return string
      */
-    abstract public function getType(): string;
+    abstract public function getType(): UserType;
 
     public function getCreatedAt(): ?\DateTimeImmutable
     {

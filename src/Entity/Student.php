@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use App\Enum\UserType;
 use App\Repository\StudentRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -25,9 +26,9 @@ class Student extends User
      * Returns the type identifier for this user,
      * distinguish between user types.
      */
-    public function getType(): string
+    public function getType(): UserType
     {
-        return 'student';
+        return UserType::STUDENT;
     }
 
     /**

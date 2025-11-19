@@ -2,6 +2,7 @@
 
 namespace App\DTO;
 
+use App\Enum\UserType;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
@@ -32,8 +33,7 @@ class RegisterUserRequest
         public readonly string $lastName,
 
         #[Assert\NotBlank]
-        #[Assert\Choice(['student', 'teacher'])]
-        public readonly string $type,
+        public readonly ?UserType $type,
     ) {}
 
 }
