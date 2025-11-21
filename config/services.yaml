@@ -24,6 +24,7 @@ services:
             - '../src/Kernel.php'
             - '../src/Legacy/'
 
+    App\Service\EmailServiceInterface: '@App\Service\EmailService'
 
     App\EventListener\JWTAuthenticationListener:
         tags:

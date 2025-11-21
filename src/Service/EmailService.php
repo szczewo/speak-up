@@ -13,7 +13,7 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 /**
  * Service to handle email sending functionalities.
  */
-class EmailService
+class EmailService implements EmailServiceInterface
 {
     public function __construct(
         private MailerInterface $mailer,
