@@ -4,6 +4,7 @@ namespace App\EventListener;
 
 use App\Event\UserRegisteredEvent;
 use App\Service\EmailService;
+use App\Service\EmailServiceInterface;
 
 /**
  * Listener to send email verification upon user registration.
@@ -11,12 +12,11 @@ use App\Service\EmailService;
 class SendEmailVerificationListener
 {
 
-    public function __construct(private EmailService $emailService) {}
+    public function __construct(private EmailServiceInterface $emailService) {}
 
     public function onUserRegistered(UserRegisteredEvent $event)
     {
-        $user = $event->getUser();
-        $this->emailService->sendEmailVerification($user);
+        $this->emailService->sendEmailVerification( $event->getUser());
     }
 
 }
