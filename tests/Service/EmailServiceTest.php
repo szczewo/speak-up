@@ -41,7 +41,6 @@ class EmailServiceTest extends TestCase
         $student->setEmail('student@example.com')
             ->setName('Test')
             ->setLastName('Student')
-            ->setIsVerified(false)
             ->setVerificationToken('verification-token-123')
             ->setVerificationTokenExpiresAt(new DateTimeImmutable('+1 day'));
 
