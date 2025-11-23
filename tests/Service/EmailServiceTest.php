@@ -88,7 +88,6 @@ class EmailServiceTest extends TestCase
 
     /**
      * Tests sending email verification for an unsupported user type.
-     * @return void
      */
     #[Group('service')]
     public function testSendEmailVerificationUnsupportedUserType(): void
