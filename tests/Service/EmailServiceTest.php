@@ -10,8 +10,8 @@ use App\Service\EmailServiceInterface;
 use DateTimeImmutable;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\TestCase;
+use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 use Symfony\Component\Mailer\MailerInterface;
-use Symfony\Component\Mime\Email;
 
 class EmailServiceTest extends TestCase
 {
@@ -45,7 +45,7 @@ class EmailServiceTest extends TestCase
 
         $this->mailer->expects($this->once())
             ->method('send')
-            ->with($this->callback(function (Email $email) use ($student) {
+            ->with($this->callback(function (TemplatedEmail $email) use ($student) {
                 $this->assertSame('student@example.com', $email->getTo()[0]->getAddress());
                 $this->assertSame('mail/verification_email_student.html.twig', $email->getHtmlTemplate());
                 $context = $email->getContext();
@@ -73,7 +73,7 @@ class EmailServiceTest extends TestCase
         $this->mailer
             ->expects($this->once())
             ->method('send')
-            ->with($this->callback(function (Email $email) use ($teacher) {
+            ->with($this->callback(function (TemplatedEmail $email) use ($teacher) {
                 $this->assertSame('teacher@example.com', $email->getTo()[0]->getAddress());
                 $this->assertSame('mail/verification_email_teacher.html.twig', $email->getHtmlTemplate());
                 $context = $email->getContext();
