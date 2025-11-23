@@ -61,7 +61,6 @@ class EmailServiceTest extends TestCase
 
     /**
      * Tests sending email verification for a Teacher user.
-     * @return void
      */
     #[Group('service')]
     public function testSendEmailVerificationForTeacher(): void
