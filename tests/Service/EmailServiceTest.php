@@ -35,7 +35,7 @@ class EmailServiceTest extends TestCase
      * @return void
      */
     #[Group('service')]
-    public function testSendEmailVerificationForStudent()
+    public function testSendEmailVerificationForStudent(): void
     {
         $student = new Student();
         $student->setEmail('student@example.com')
