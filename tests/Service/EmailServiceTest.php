@@ -18,7 +18,6 @@ class EmailServiceTest extends TestCase
     private MailerInterface $mailer;
     private EmailServiceInterface $emailService;
 
-
     protected function setUp(): void
     {
         $this->mailer = $this->createMock(MailerInterface::class);
