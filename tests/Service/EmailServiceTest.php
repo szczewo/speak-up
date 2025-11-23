@@ -22,7 +22,7 @@ class EmailServiceTest extends TestCase
     protected function setUp(): void
     {
         $this->mailer = $this->createMock(MailerInterface::class);
-        $this->emailService  = new EmailService(
+        $this->emailService = new EmailService(
             $this->mailer,
             'test@example.com',
             'Test Sender',
