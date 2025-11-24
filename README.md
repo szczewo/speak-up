@@ -1,67 +1,78 @@
 # SpeakUp
 
-**SpeakUp** is a modern web application designed to connect students with language teachers for both in-person and online lessons. The platform allows users to search for teachers, book lessons, manage their schedules, and communicate effectively — all in one place.
+**SpeakUp** is a full-stack web application that connects students with language teachers for online and in-person lessons. The platform focuses on making it easy to discover the right tutor, book lessons seamlessly, and communicate reliably — helping learners stay engaged throughout their language-learning journey.
+This repository demonstrates a full-stack architecture following real production patterns and modern development practices.
 
-## Completed features
+## Current Capabilities
+- **User onboarding**: Registration and login with custom email verification flow (token generation, expiration, event-driven email sending).
+- **Domain model**: Dedicated `UserType` enum with Doctrine inheritance for `Student` / `Teacher`.
+- **Email delivery**: Centralized email service with Twig templates + unit test coverage.
+- **Authentication**: JWT authentication (Lexik JWT) configured for stateless API auth.
+- **API design**: RESTful API endpoints with DTOs, validation, and structured error handling.
+- **Event system**: Symfony Event Dispatcher for decoupled architecture (e.g., email-on-registration event).
+- **Database**: MySQL with Doctrine ORM, migrations for schema versioning.
+- **Frontend foundation**: React setup via Webpack Encore with Tailwind-ready styling and HMR.
+- **DevOps**: Docker Compose stack with PHP, MySQL, phpMyAdmin, Redis, and Mailpit; GitHub Actions configured for CI running PHPUnit tests.
 
-- Project structure with Symfony 6 (backend) and Docker setup (PHP, MySQL, phpMyAdmin, Redis, Mailpit)
-- Database design with Doctrine and migrations
-- User registration & login with email verification (Symfony Security)
-- CI/CD configured with GitHub Actions
-- Entities: User (Student/Teacher), Language
-- Environment configuration
-- PHPUnit test setup
-- Basic styling with Tailwind CSS
+## Roadmap Highlights
+- Lesson lifecycle: create/edit/book lessons with availability management and calendar view.
+- Discovery: search and filters by language, price, availability, rating, and location.
+- Engagement: messaging between students and teachers, notifications, and OAuth (Google/Facebook) logins.
+- Payments & trust: booking payments, reviews, and ratings.
+- Observability & quality: expanded automated tests (PHPUnit + React Testing Library/Cypress) and production-ready monitoring.
 
 ## In Progress
-
-- Implementation of JWT-based authentication
+- Password reset flow with email notifications
+- RabbitMQ integration for asynchronous email sending
 - React CRUD API for managing lessons (create/edit/book)
-- Availability management logic (backend)
 
-## Planned Features 
+## Project Structure
+- `src/` – Symfony application (controllers, services, enums, listeners, handlers, DTOs).
+- `assets/` – React application (components, hooks, and styles).
+- `templates/` – Twig templates for system emails and layouts.
+- `migrations/` – Doctrine migrations.
+- `tests/` – PHPUnit tests (unit + integration).
 
-- Teacher/lessons search with filters (language, price, availability)
-- Messaging system between students and teachers
-- Booking calendar with interactive time slots
-- Teacher rating and lesson review system
-- Payment flow for lesson booking
-- Email & SMS notifications for lesson reminders
-- Google/Facebook login (OAuth)
-- Admin dashboard for user/content management
-- Google Calendar integration
-- Real-time updates (WebSockets or Firebase)
-- Google Maps integration for local lessons
-- Advanced filters and sorting (price sliders, rating, availability)
-- Full test coverage: PHPUnit + React Testing Library / Cypress
-- Production deployment setup
+## Tech Stack
+- **Backend**: PHP 8.1/8.2, Symfony 6, Doctrine ORM, Lexik JWT Authentication Bundle, Symfony Mailer.
+- **Frontend**: React 19, Webpack Encore, Tailwind CSS.
+- **Database**: MySQL.
+- **Tooling**: Docker + Docker Compose, GitHub Actions CI, PHPUnit.
+- **Planned**:
+  - RabbitMQ for asynchronous tasks (e.g., email sending).
+  - OAuth logins (Google/Facebook).
+  - React Testing Library and Cypress for frontend tests.
+  - Redis for caching.
 
-## Technologies
-
-
-- **Backend**: PHP 8.2, Symfony 6, Doctrine ORM
-- **Frontend**: React.js (in progress), Webpack Encore, Tailwind CSS
-- **Database**: MySQL
-- **Cache / Storage:** Redis (planned)
-- **Authentication**: Symfony Security, OAuth (planned)
-- **Containerization**: Docker + Docker Compose
-- **Testing**: PHPUnit (backend), React Testing Library / Cypress (frontend, planned)
-- **CI/CD**: GitHub Actions
-
-## Getting Started
+## Getting Started (Docker)
 
 To run the application locally:
 
 ```bash
 docker-compose up --build
 ```
+Then access the following services in your browser:
+- App: http://speak-up.localhost
+- Mailpit (test inbox): http://speak-up.localhost:8025
+- phpMyAdmin: http://speak-up.localhost:8080
+
+Default database credentials are in the .env.test file.
+
+## Testing
+- Backend: `php bin/phpunit` (unit and integration tests under `tests/`).
+  Exclude legacy tests with:
+```bash
+php bin/phpunit --exclude-group legacy
+```
+- Frontend: React Testing Library and Cypress planned.
+
+## CI/CD
+GitHub Actions run PHPUnit on every pull request to maintain code reliability and ensure smooth integration.
+The Docker-based stack and environment variables support future deployment to staging/production.
 
 ## Author
-
 Created by [**Anna Strzewiczek**](https://www.linkedin.com/in/anna-strzewiczek)
 
 This project is part of a full-stack portfolio and designed for job applications (PHP Developer/Fullstack Developer).
 
-
 Work in progress — feedback and contributions welcome! 😊
-
