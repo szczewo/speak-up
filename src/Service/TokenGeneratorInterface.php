@@ -14,5 +14,4 @@ interface TokenGeneratorInterface
      */
     public function generateExpiringToken(int $length = 32, int $ttlSeconds = 3600): array;
 
-
 }
