@@ -11,6 +11,8 @@ interface TokenGeneratorInterface
 
     /**
      * Generate a token with expiration timestamp.
+     *
+     * @return array{token: string, expiresAt: \DateTimeImmutable}
      */
     public function generateExpiringToken(int $length = 32, int $ttlSeconds = 3600): array;
 
