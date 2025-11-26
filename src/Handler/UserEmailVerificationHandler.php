@@ -2,19 +2,11 @@
 
 namespace App\Handler;
 
-use App\DTO\RegisterUserRequest;
 use App\Entity\User;
-use App\Event\UserRegisteredEvent;
-use App\Exception\EmailAlreadyInUseException;
-use App\Factory\UserFactory;
-use App\Service\TokenGenerator;
-use Doctrine\DBAL\Exception\UniqueConstraintViolationException;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
 use RuntimeException;
-use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
-use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
 /**
  * Handles user email verification process

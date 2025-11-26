@@ -26,6 +26,8 @@ services:
 
     App\Service\EmailServiceInterface: '@App\Service\EmailService'
 
+    App\Service\TokenGeneratorInterface: '@App\Service\TokenGenerator'
+
     App\EventListener\JWTAuthenticationListener:
         tags:
             - { name: kernel.event_listener, event: lexik_jwt_authentication.on_authentication_success, method: onAuthenticationSuccess }

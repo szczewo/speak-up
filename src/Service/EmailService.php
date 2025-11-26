@@ -8,7 +8,6 @@ use App\Entity\User;
 use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\Mime\Address;
-use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 /**
  * Service to handle email sending functionalities.

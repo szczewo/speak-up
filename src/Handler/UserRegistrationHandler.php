@@ -7,7 +7,7 @@ use App\Entity\User;
 use App\Event\UserRegisteredEvent;
 use App\Exception\EmailAlreadyInUseException;
 use App\Factory\UserFactory;
-use App\Service\TokenGenerator;
+use App\Service\TokenGeneratorInterface;
 use Doctrine\DBAL\Exception\UniqueConstraintViolationException;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
@@ -25,7 +25,7 @@ class UserRegistrationHandler
         private UserPasswordHasherInterface $hasher,
         private EntityManagerInterface $em,
         private EventDispatcherInterface $dispatcher,
-        private TokenGenerator $tokenGenerator,
+        private TokenGeneratorInterface $tokenGenerator,
     ) {}
 
     /**
