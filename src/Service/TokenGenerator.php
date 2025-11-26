@@ -7,7 +7,7 @@ use Exception;
 /**
  * Service for generating secure tokens.
  */
-class TokenGenerator
+class TokenGenerator implements TokenGeneratorInterface
 {
 
     /**
@@ -19,7 +19,6 @@ class TokenGenerator
     {
         return bin2hex(random_bytes($length / 2));
     }
-
 
     /**
      * @throws Exception
