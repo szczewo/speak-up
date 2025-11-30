@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use App\Repository\ResetPasswordRequestRepository;
+use DateTimeImmutable;
 use Doctrine\ORM\Mapping as ORM;
 use SymfonyCasts\Bundle\ResetPassword\Model\ResetPasswordRequestInterface;
 use SymfonyCasts\Bundle\ResetPassword\Model\ResetPasswordRequestTrait;
@@ -28,23 +29,25 @@ class ResetPasswordRequest
     private string $selector;
 
     #[ORM\Column(type: 'datetime_immutable')]
-    private \DateTimeImmutable $expiresAt;
+    private DateTimeImmutable $expiresAt;
 
     #[ORM\Column(type: 'datetime_immutable')]
-    private \DateTimeImmutable $createdAt;
+    private DateTimeImmutable $createdAt;
+
+    private ?string $plainToken = null;
 
     public function __construct(
         User $user,
         string $hashedToken,
         string $selector,
-        \DateTimeImmutable $expiresAt,
+        DateTimeImmutable $expiresAt,
     )
     {
         $this->user = $user;
         $this->hashedToken = $hashedToken;
         $this->selector = $selector;
         $this->expiresAt = $expiresAt;
-        $this->createdAt = new \DateTimeImmutable();
+        $this->createdAt = new DateTimeImmutable();
     }
 
 
@@ -70,6 +73,22 @@ class ResetPasswordRequest
 
     public function isExpired(): bool
     {
-        return $this->expiresAt <= new \DateTimeImmutable();
+        return $this->expiresAt <= new DateTimeImmutable();
+    }
+
+    public function setPlainToken(string $plainToken) : self
+    {
+        $this->plainToken = $plainToken;
+        return $this;
+    }
+
+    public function getPlainToken(): ?string
+    {
+        return $this->plainToken;
+    }
+
+    public function getExpiresAt() : DateTimeImmutable
+    {
+        return $this->expiresAt;
     }
 }

@@ -45,6 +45,8 @@ class PasswordResetHandler
             expiresAt: (new \DateTimeImmutable())->modify('+1 hour')
         );
 
+        $resetPasswordRequest->setPlainToken($plainToken);
+
         try {
             $this->em->persist($resetPasswordRequest);
             $this->em->flush();
