@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\ResetPasswordRequest;
+use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 use SymfonyCasts\Bundle\ResetPassword\Model\ResetPasswordRequestInterface;
@@ -17,17 +18,54 @@ use SymfonyCasts\Bundle\ResetPassword\Persistence\ResetPasswordRequestRepository
  * @method ResetPasswordRequest[]    findAll()
  * @method ResetPasswordRequest[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
-class ResetPasswordRequestRepository extends ServiceEntityRepository implements ResetPasswordRequestRepositoryInterface
+class ResetPasswordRequestRepository extends ServiceEntityRepository
 {
-    use ResetPasswordRequestRepositoryTrait;
-
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, ResetPasswordRequest::class);
     }
 
-    public function createResetPasswordRequest(object $user, \DateTimeInterface $expiresAt, string $selector, string $hashedToken): ResetPasswordRequestInterface
+    public function findOneBySelector(string $selector): ?ResetPasswordRequest
     {
-        return new ResetPasswordRequest($user, $expiresAt, $selector, $hashedToken);
+        return $this->createQueryBuilder('r')
+            ->andWhere('r.selector = :selector')
+            ->setParameter('selector', $selector)
+            ->getQuery()
+            ->getOneOrNullResult();
+    }
+
+    public function findActiveByUser(User $user): ?ResetPasswordRequest
+    {
+        return $this->createQueryBuilder('r')
+            ->andWhere('r.user = :user')
+            ->andWhere('r.expiresAt > :now')
+            ->setParameter('user', $user)
+            ->setParameter('now', new \DateTimeImmutable())
+            ->orderBy('r.createdAt', 'DESC')
+            ->setMaxResults(1)
+            ->getQuery()
+            ->getOneOrNullResult();
+    }
+
+    public function save(ResetPasswordRequest $request): void
+    {
+        $this->_em->persist($request);
+        $this->_em->flush();
+    }
+
+    public function remove(ResetPasswordRequest $request): void
+    {
+        $this->_em->remove($request);
+        $this->_em->flush();
+    }
+
+    public function removeExpired(): int
+    {
+        return $this->createQueryBuilder('r')
+            ->delete()
+            ->andWhere('r.expiresAt <= :now')
+            ->setParameter('now', new \DateTimeImmutable())
+            ->getQuery()
+            ->execute();
     }
 }
