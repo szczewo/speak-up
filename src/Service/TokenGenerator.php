@@ -17,7 +17,7 @@ class TokenGenerator implements TokenGeneratorInterface
      */
     public function generateToken(int $length = 32): string
     {
-        return bin2hex(random_bytes($length / 2));
+        return bin2hex(random_bytes($length));
     }
 
     /**
@@ -34,4 +34,8 @@ class TokenGenerator implements TokenGeneratorInterface
         ];
     }
 
+    public function generateSelector(int $length = 16): string
+    {
+        return bin2hex(random_bytes($length));
+    }
 }

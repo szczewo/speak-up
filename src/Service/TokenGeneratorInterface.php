@@ -16,4 +16,11 @@ interface TokenGeneratorInterface
      */
     public function generateExpiringToken(int $length = 32, int $ttlSeconds = 3600): array;
 
+
+    /**
+     * Generate a selector for password reset requests.
+     * @return string
+     */
+    public function generateSelector(int $length = 16): string;
+
 }
