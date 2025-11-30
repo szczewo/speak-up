@@ -42,6 +42,11 @@ services:
     App\EventListener\SendEmailVerificationListener:
         tags:
             - { name: kernel.event_listener, event: 'user.registered', method: onUserRegistered }
+
+    App\EventListener\SendPasswordResetListener:
+        tags:
+            - { name: kernel.event_listener, event: 'user.reset_password_requested'}
+
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones
 
