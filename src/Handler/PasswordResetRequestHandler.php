@@ -13,9 +13,9 @@ use RuntimeException;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 /**
- * Handles user registration process
+ * Handles password reset request process
  */
-class PasswordResetHandler
+class PasswordResetRequestHandler
 {
     public function __construct(
         private EntityManagerInterface $em,
