@@ -33,6 +33,12 @@ class PasswordResetRequestHandler
             throw new InvalidArgumentException('No user found with email: ' . $email);
         }
 
+        $existingRequest = $this->em->getRepository(ResetPasswordRequest::class)->findActiveByUser($existingUser);
+
+        if ($existingRequest !== null) {
+            $this->em->remove($existingRequest);
+        }
+
         $selector = $this->tokenGenerator->generateSelector();
         $plainToken = $this->tokenGenerator->generateToken();
 
