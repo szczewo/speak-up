@@ -9,7 +9,7 @@ use InvalidArgumentException;
 /**
  * Handles reset password token validation.
  */
-class ResetPasswordValidationHandler
+class PasswordResetValidationHandler
 {
     public function __construct(
         private ResetPasswordRequestRepository $repository,

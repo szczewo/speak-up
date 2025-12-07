@@ -6,7 +6,7 @@ namespace App\Controller;
 use App\DTO\ResetPassword;
 use App\Handler\PasswordResetFinalHandler;
 use App\Handler\PasswordResetRequestHandler;
-use App\Handler\ResetPasswordValidationHandler;
+use App\Handler\PasswordResetValidationHandler;
 use Exception;
 use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -62,7 +62,7 @@ class ResetPasswordController extends AbstractController
     #[Route('/api/validate-reset-token', name: 'api_validate_reset_token', methods: ['GET'])]
     public function validateToken(
         Request $request,
-        ResetPasswordValidationHandler $validator,
+        PasswordResetValidationHandler $validator,
     ) : JsonResponse
     {
         $token = $request->get('token');

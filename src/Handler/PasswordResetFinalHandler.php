@@ -16,7 +16,7 @@ class PasswordResetFinalHandler
 {
     public function __construct(
         private EntityManagerInterface $em,
-        private ResetPasswordValidationHandler $validator,
+        private PasswordResetValidationHandler $validator,
         private UserPasswordHasherInterface $hasher
     ) {}
 
