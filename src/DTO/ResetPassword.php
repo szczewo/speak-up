@@ -2,7 +2,6 @@
 
 namespace App\DTO;
 
-use App\Enum\UserType;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
