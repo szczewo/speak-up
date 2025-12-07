@@ -16,9 +16,9 @@ class ResetPasswordRequestedEvent extends Event
         private readonly ResetPasswordRequest $resetPasswordRequest
     ) {}
 
-  public function getResetPasswordRequest(): ResetPasswordRequest
-  {
-      return $this->resetPasswordRequest;
-  }
+    public function getResetPasswordRequest(): ResetPasswordRequest
+    {
+        return $this->resetPasswordRequest;
+    }
 
 }
