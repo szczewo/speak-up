@@ -111,7 +111,7 @@ class PasswordResetFinalHandlerTest extends TestCase
     #[Group('handler')]
     public function testThrowsRuntimeExceptionOnFlushFailure(): void
     {
-       $dto = new ResetPassword(
+        $dto = new ResetPassword(
             selector: 'selector123',
             token: 'token123',
             password: 'NewPassword123!',
