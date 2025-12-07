@@ -10,8 +10,7 @@ use Symfony\Contracts\EventDispatcher\Event;
  */
 class ResetPasswordRequestedEvent extends Event
 {
-    public const NAME = 'user.reset_password_requested'
-;
+    public const NAME = 'user.reset_password_requested';
 
     public function __construct(
         private readonly ResetPasswordRequest $resetPasswordRequest
