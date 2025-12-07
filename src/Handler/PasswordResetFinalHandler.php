@@ -10,7 +10,7 @@ use RuntimeException;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
 /**
-* Handles password reset
+ * Handles password reset
  */
 class PasswordResetFinalHandler
 {
