@@ -2,6 +2,7 @@
 
 namespace App\Service;
 
+use App\Entity\ResetPasswordRequest;
 use App\Entity\Student;
 use App\Entity\Teacher;
 use App\Entity\User;
@@ -44,6 +45,32 @@ class EmailService implements EmailServiceInterface
                 'name' => $user->getName(),
                 'verificationTokenExpiresAt' => $user->getVerificationTokenExpiresAt()?->format('Y-m-d H:i'),
                 'verificationUrl' => $verificationUrl,
+            ]);
+
+        $this->mailer->send($email);
+    }
+
+
+    public function sendResetPasswordEmail(ResetPasswordRequest $resetPasswordRequest): void
+    {
+        $user = $resetPasswordRequest->getUser();
+
+        $resetUrl = sprintf(
+            '%s/reset-password?selector=%s&token=%s',
+            rtrim($this->frontendUrl, '/'),
+            $resetPasswordRequest->getSelector(),
+            $resetPasswordRequest->getPlainToken()
+        );
+
+        $email = (new TemplatedEmail())
+            ->from(new Address($this->fromAddress, $this->fromName))
+            ->to($user->getEmail())
+            ->subject('Reset your password')
+            ->htmlTemplate('mail/reset_password_email.html.twig')
+            ->context([
+                'name' => $user->getName(),
+                'resetUrl' => $resetUrl,
+                'expiresAt' => $resetPasswordRequest->getExpiresAt()->format('Y-m-d H:i'),
             ]);
 
         $this->mailer->send($email);
