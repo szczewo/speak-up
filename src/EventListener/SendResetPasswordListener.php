@@ -6,7 +6,7 @@ use App\Event\ResetPasswordRequestedEvent;
 use App\Service\EmailServiceInterface;
 
 /**
-* Listener to send reset password email when requested.
+ * Listener to send reset password email when requested.
  */
 class SendResetPasswordListener
 {
