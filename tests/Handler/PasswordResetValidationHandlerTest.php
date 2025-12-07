@@ -21,7 +21,7 @@ class PasswordResetValidationHandlerTest extends TestCase
         $this->validator = new PasswordResetValidationHandler($this->repo);
     }
 
-    /*
+    /**
      * Tests that a valid token passes validation and returns the correct request.
      */
     #[Group('handler')]
@@ -50,7 +50,7 @@ class PasswordResetValidationHandlerTest extends TestCase
         $this->assertSame($request, $result);
     }
 
-    /*
+    /**
      * Tests that an invalid selector throws an InvalidArgumentException.
      */
     #[Group('handler')]
@@ -63,7 +63,7 @@ class PasswordResetValidationHandlerTest extends TestCase
         $this->validator->validate('missing', 'token');
     }
 
-    /*
+    /**
      * Tests that an expired token throws an InvalidArgumentException.
      */
     #[Group('handler')]
@@ -88,7 +88,7 @@ class PasswordResetValidationHandlerTest extends TestCase
         $this->validator->validate($selector, $token);
     }
 
-    /*
+    /**
      * Tests that a wrong token throws an InvalidArgumentException.
      */
     #[Group('handler')]
